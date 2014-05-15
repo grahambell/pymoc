@@ -14,14 +14,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from astropy.io import fits
+from datetime import datetime
 import numpy as np
+
+from pymoc.version import version
 
 class MOC:
     def __init__(self, order, pixels):
         self.order = order
         self.orders = {order: pixels}
 
-    def normalize(self, max_order=28):
+    def normalize(self, max_order=29):
         # Note:  only looks down from self.order.  Doesn't look
         # both ways, so won't find pixels which are already represented
         # at a lower order.  i.e. it currently assumes that the data
@@ -102,11 +105,20 @@ class MOC:
         cols = fits.ColDefs([col])
         tbhdu = fits.new_table(cols)
 
+        # Mandatory Keywords.
         tbhdu.header['PIXTYPE'] = 'HEALPIX'
-        tbhdu.header['HPXnuniq'] = self.order
         tbhdu.header['ORDERING'] = 'NUNIQ'
-        tbhdu.header['OBS_NPIX'] = len(nuniq)
         tbhdu.header['COORDSYS'] = 'C'
+        tbhdu.header['MOCORDER'] = self.order
+
+        # Optional Keywords.
+        tbhdu.header['MOCTOOL'] = 'PyMOC ' + version
+        # tbhdu.header['MOCTYPE'] =
+        # tbhdu.header['MOCID'] =
+        # tbhdu.header['ORIGIN'] =
+        tbhdu.header['DATE'] = datetime.utcnow().replace(
+                microsecond=0).isoformat()
+        # tbhdu.header['EXTNAME'] =
 
         prihdr = fits.Header()
         prihdu = fits.PrimaryHDU(header=prihdr)
