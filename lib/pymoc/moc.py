@@ -25,16 +25,13 @@ class MOC:
         self.orders = {order: pixels}
 
     def normalize(self, max_order=29):
-        # Note:  only looks down from self.order.  Doesn't look
-        # both ways, so won't find pixels which are already represented
-        # at a lower order.  i.e. it currently assumes that the data
-        # are added at one order only and then this method is called.
         moc_order = 0
 
         # Group the pixels by iterating down from the order.  At each
         # order, where all 4 adjacent pixels are present (or we are above
         # the maximum order) they are replaced with a single pixel in the
-        # next lower order.  Otherwise the pixel should appear in the MOC.
+        # next lower order.  Otherwise the pixel should appear in the MOC
+        # unless it is already represented at a lower order.
         for order in range(self.order, 0, -1):
             pixels = self.orders[order]
 
@@ -47,7 +44,24 @@ class MOC:
             while pixels:
                 pixel = pixels.pop()
 
-                if ((order > max_order) or
+                # Look to lower orders to ensure this pixel isn't
+                # already covered.
+                check_pixel = pixel
+                already_contained = True
+                for check_order in range(order - 1, 0, -1):
+                    check_pixel >>= 2
+                    if ((check_order in self.orders) and
+                            (check_pixel in self.orders[check_order])):
+
+                        break
+                else:
+                    already_contained = False
+
+                # Check whether this order is above the maximum, or
+                # if we have all 4 adjacent pixels.  Also do this if
+                # the pixel was already contained at a lower level
+                # so that we can avoid checking the adjacent pixels.
+                if (already_contained or (order > max_order) or
                         (((pixel ^ 1) in pixels) and
                         ((pixel ^ 2) in pixels) and
                         ((pixel ^ 3) in pixels))):
@@ -56,9 +70,10 @@ class MOC:
                     pixels.discard(pixel ^ 2)
                     pixels.discard(pixel ^ 3)
 
-                    # Group these pixels by placing the equivalent pixel
-                    # for the next order down in the set.
-                    next_pixels.add(pixel >> 2)
+                    if not already_contained:
+                        # Group these pixels by placing the equivalent pixel
+                        # for the next order down in the set.
+                        next_pixels.add(pixel >> 2)
 
                 else:
                     new_pixels.add(pixel)
