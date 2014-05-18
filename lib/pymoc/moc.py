@@ -161,7 +161,8 @@ class MOC(object):
         col = fits.Column(name='NPIX', format=col_type, array=nuniq)
 
         cols = fits.ColDefs([col])
-        tbhdu = fits.new_table(cols)
+        rec = fits.FITS_rec.from_columns(cols)
+        tbhdu = fits.BinTableHDU(rec)
 
         # Mandatory Keywords.
         tbhdu.header['PIXTYPE'] = 'HEALPIX'
