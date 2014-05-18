@@ -1,1 +1,3 @@
-from pymoc.moc import MOC
+from __future__ import absolute_import
+
+from .moc import MOC

@@ -13,11 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+
 from astropy.io import fits
 from datetime import datetime
 import numpy as np
 
-from pymoc.version import version
+from .version import version
 
 MAX_ORDER = 29
 
