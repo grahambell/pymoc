@@ -23,9 +23,16 @@ from .version import version
 
 MAX_ORDER = 29
 
+MOC_TYPES = ('IMAGE', 'CATALOG')
+
 class MOC(object):
-    def __init__(self, order=None, cells=None):
+    def __init__(self, order=None, cells=None, name=None, mocid=None,
+            origin=None, moctype=None):
         self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
+        self.id = mocid
+        self.name = name
+        self.origin = origin
+        self.type = moctype
 
         if order is not None and cells is not None:
             self.add(order, cells)
@@ -48,6 +55,22 @@ class MOC(object):
                 return order
 
         return 0
+
+    @property
+    def type(self):
+        return self._type
+
+    @type.setter
+    def type(self, value):
+        self._type = None
+        if value is None:
+            return
+
+        value = value.upper()
+        if value in MOC_TYPES:
+            self._type = value
+        else:
+            raise ValueError('MOC type must be one of ' + ', '.join(MOC_TYPES))
 
     def add(self, order, cells):
         self._orders[order].update(cells)
@@ -145,15 +168,29 @@ class MOC(object):
         tbhdu.header['ORDERING'] = 'NUNIQ'
         tbhdu.header['COORDSYS'] = 'C'
         tbhdu.header['MOCORDER'] = self.order
+        tbhdu.header.comments['PIXTYPE'] = 'HEALPix magic code'
+        tbhdu.header.comments['ORDERING'] = 'NUNIQ coding method'
+        tbhdu.header.comments['COORDSYS'] = 'ICRS reference frame'
+        tbhdu.header.comments['MOCORDER'] = 'MOC resolution (best order)'
 
         # Optional Keywords.
         tbhdu.header['MOCTOOL'] = 'PyMOC ' + version
-        # tbhdu.header['MOCTYPE'] =
-        # tbhdu.header['MOCID'] =
-        # tbhdu.header['ORIGIN'] =
+        tbhdu.header.comments['MOCTOOL'] = 'Name of MOC generator'
+        if self.type is not None:
+            tbhdu.header['MOCTYPE'] = self.type
+            tbhdu.header.comments['MOCTYPE'] = 'Source type (IMAGE or CATALOG)'
+        if self.id is not None:
+            tbhdu.header['MOCID'] = self.id
+            tbhdu.header.comments['MOCID'] = 'Identifier of the collection'
+        if self.origin is not None:
+            tbhdu.header['ORIGIN'] = self.origin
+            tbhdu.header.comments['ORIGIN'] = 'MOC origin'
         tbhdu.header['DATE'] = datetime.utcnow().replace(
                 microsecond=0).isoformat()
-        # tbhdu.header['EXTNAME'] =
+        tbhdu.header.comments['DATE'] = 'MOC creation date'
+        if self.name is not None:
+            tbhdu.header['EXTNAME'] = self.name
+            tbhdu.header.comments['EXTNAME'] = 'MOC name'
 
         prihdr = fits.Header()
         prihdu = fits.PrimaryHDU(header=prihdr)
