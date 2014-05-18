@@ -24,6 +24,26 @@ class MOC:
         self.order = order
         self.orders = {order: pixels}
 
+    def __getitem__(self, order):
+        if not isinstance(order, int):
+            raise TypeError('MOC order must be an integer')
+        elif not 0 <= order <= 29:
+            raise ValueError('MOC order must be in range 0-29')
+
+        if order in self.orders:
+            return frozenset(self.orders[order])
+        else:
+            return frozenset()
+
+    def add(self, order, cells):
+        if order in self.orders:
+            self.orders[order] |= cells
+        else:
+            self.orders[order] = cells
+
+        if order > self.order:
+            self.order = order
+
     def normalize(self, max_order=29):
         moc_order = 0
 
