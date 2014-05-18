@@ -72,7 +72,7 @@ class MOC(object):
                 # already covered.
                 check_pixel = pixel
                 already_contained = True
-                for check_order in range(order - 1, 0, -1):
+                for check_order in range(order - 1, -1, -1):
                     check_pixel >>= 2
                     if check_pixel in self._orders[check_order]:
                         break
