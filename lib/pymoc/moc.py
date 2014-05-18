@@ -19,32 +19,38 @@ import numpy as np
 
 from pymoc.version import version
 
-class MOC:
-    def __init__(self, order, pixels):
-        self.order = order
-        self.orders = {order: pixels}
+MAX_ORDER = 29
+
+class MOC(object):
+    def __init__(self, order=None, cells=None):
+        self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
+
+        if order is not None and cells is not None:
+            self.add(order, cells)
+        elif order is not None or cells is not None:
+            raise ValueError('Only one of order and cells specified')
 
     def __getitem__(self, order):
         if not isinstance(order, int):
             raise TypeError('MOC order must be an integer')
-        elif not 0 <= order <= 29:
-            raise ValueError('MOC order must be in range 0-29')
+        elif not 0 <= order <= MAX_ORDER:
+            raise ValueError('MOC order must be in range 0-{0}'.format(
+                    MAX_ORDER))
 
-        if order in self.orders:
-            return frozenset(self.orders[order])
-        else:
-            return frozenset()
+        return frozenset(self._orders[order])
+
+    @property
+    def order(self):
+        for order in range(MAX_ORDER, 0, -1):
+            if self._orders[order]:
+                return order
+
+        return 0
 
     def add(self, order, cells):
-        if order in self.orders:
-            self.orders[order] |= cells
-        else:
-            self.orders[order] = cells
+        self._orders[order].update(cells)
 
-        if order > self.order:
-            self.order = order
-
-    def normalize(self, max_order=29):
+    def normalize(self, max_order=MAX_ORDER):
         moc_order = 0
 
         # Group the pixels by iterating down from the order.  At each
@@ -53,11 +59,9 @@ class MOC:
         # next lower order.  Otherwise the pixel should appear in the MOC
         # unless it is already represented at a lower order.
         for order in range(self.order, 0, -1):
-            pixels = self.orders[order]
+            pixels = self._orders[order]
 
-            if (order - 1) not in self.orders:
-                self.orders[order - 1] = set()
-            next_pixels = self.orders[order - 1]
+            next_pixels = self._orders[order - 1]
 
             new_pixels = set()
 
@@ -70,9 +74,7 @@ class MOC:
                 already_contained = True
                 for check_order in range(order - 1, 0, -1):
                     check_pixel >>= 2
-                    if ((check_order in self.orders) and
-                            (check_pixel in self.orders[check_order])):
-
+                    if check_pixel in self._orders[check_order]:
                         break
                 else:
                     already_contained = False
@@ -104,11 +106,7 @@ class MOC:
                         moc_order = order
 
             if new_pixels:
-                self.orders[order] = new_pixels
-            else:
-                del self.orders[order]
-
-        self.order = moc_order
+                self._orders[order].update(new_pixels)
 
     def write_fits(self, filename):
         """Write to a FITS file."""
@@ -125,10 +123,10 @@ class MOC:
         # top two bits is set so that the order of the value can be
         # determined.
         nuniq = []
-        for order in self.orders:
+        for order in range(0, MAX_ORDER + 1):
             uniq_prefix = 4 * (4 ** order)
-            for pixel in self.orders[order]:
-                nuniq.append(pixel + uniq_prefix)
+            for npix in self._orders[order]:
+                nuniq.append(npix + uniq_prefix)
 
         # Prepare the data, and sort into numerical order.
         nuniq = np.array(nuniq, dtype=moc_type)
