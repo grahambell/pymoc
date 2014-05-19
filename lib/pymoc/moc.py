@@ -81,7 +81,30 @@ class MOC(object):
     def add(self, order, cells):
         self._normalized = False
 
-        self._orders[order].update(cells)
+        try:
+            order = int(order)
+        except ValueError as e:
+            raise TypeError('MOC order must be convertable to int')
+
+        if not 0 <= order <= MAX_ORDER:
+            raise ValueError('MOC order must be in range 0-{0}'.format(MAX_ORDER))
+
+        max_cells = self._order_num_cells(order)
+        cell_set = set()
+
+        for cell in cells:
+            try:
+                cell = int(cell)
+            except ValueError as e:
+                raise TypeError('MOC cell must be convertable to int')
+
+            if not 0 <= cell < max_cells:
+                raise ValueError('MOC cell order ' +
+                    '{0} must be in range 0-{1}'.format(order, max_cells - 1))
+
+            cell_set.add(cell)
+
+        self._orders[order].update(cell_set)
 
     def normalize(self, max_order=MAX_ORDER):
         # If the MOC is already normalized and we are not being asked
@@ -215,3 +238,8 @@ class MOC(object):
         prihdu = fits.PrimaryHDU(header=prihdr)
         hdulist = fits.HDUList([prihdu, tbhdu])
         hdulist.writeto(filename)
+
+    def _order_num_cells(self, order):
+        """Determine the number of possible cells for an order."""
+
+        return 12 * 4 ** order
