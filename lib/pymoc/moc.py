@@ -29,6 +29,8 @@ class MOC(object):
     def __init__(self, order=None, cells=None, name=None, mocid=None,
             origin=None, moctype=None):
         self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
+        self._normalized = True
+
         self.id = mocid
         self.name = name
         self.origin = origin
@@ -72,10 +74,21 @@ class MOC(object):
         else:
             raise ValueError('MOC type must be one of ' + ', '.join(MOC_TYPES))
 
+    @property
+    def normalized(self):
+        return self._normalized
+
     def add(self, order, cells):
+        self._normalized = False
+
         self._orders[order].update(cells)
 
     def normalize(self, max_order=MAX_ORDER):
+        # If the MOC is already normalized and we are not being asked
+        # to reduce the order, then do nothing.
+        if self.normalized and max_order >= self.order:
+            return
+
         moc_order = 0
 
         # Group the pixels by iterating down from the order.  At each
@@ -133,8 +146,13 @@ class MOC(object):
             if new_pixels:
                 self._orders[order].update(new_pixels)
 
+        self._normalized = True
+
     def write_fits(self, filename):
         """Write to a FITS file."""
+
+        # Ensure data are normalized.
+        self.normalize()
 
         # Determine whether a 32 or 64 bit column is required.
         if self.order < 14:
