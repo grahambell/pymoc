@@ -18,7 +18,7 @@ setup(
     author_email='g.bell@jach.hawaii.edu',
     url='http://github.com/grahambell/pymoc',
     package_dir={'': 'lib'},
-    packages=['pymoc'],
+    packages=['pymoc', 'pymoc.io'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',

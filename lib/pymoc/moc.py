@@ -174,9 +174,7 @@ class MOC(object):
 
         self._normalized = True
 
-    def write_fits(self, filename):
-        """Write to a FITS file."""
-
+    def write_fits_hdu(self):
         # Ensure data are normalized.
         self.normalize()
 
@@ -237,6 +235,12 @@ class MOC(object):
             tbhdu.header['EXTNAME'] = self.name
             tbhdu.header.comments['EXTNAME'] = 'MOC name'
 
+        return tbhdu
+
+    def write_fits(self, filename):
+        """Write to a FITS file."""
+
+        tbhdu = self.write_fits_hdu()
         prihdr = fits.Header()
         prihdu = fits.PrimaryHDU(header=prihdr)
         hdulist = fits.HDUList([prihdu, tbhdu])
