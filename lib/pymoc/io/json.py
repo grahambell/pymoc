@@ -23,11 +23,8 @@ def write_moc_json(moc, filename=None, file=None):
 
     obj = {}
 
-    for order in range(0, moc.order + 1):
-        cells = moc[order]
-
-        if cells:
-            obj['{0}'.format(order)] = sorted(cells)
+    for (order, cells) in moc:
+        obj['{0}'.format(order)] = sorted(cells)
 
     if file is not None:
         _write_json(obj, file)

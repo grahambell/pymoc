@@ -35,6 +35,17 @@ class MOC(object):
         elif order is not None or cells is not None:
             raise ValueError('Only one of order and cells specified')
 
+    def __iter__(self):
+        """Implement iterator for MOC objects.
+
+        This yields an order, cell set pair for each order at
+        which there are cells.
+        """
+
+        for order in range(0, MAX_ORDER + 1):
+            if self._orders[order]:
+                yield (order, frozenset(self._orders[order]))
+
     def __getitem__(self, order):
         if not isinstance(order, int):
             raise TypeError('MOC order must be an integer')

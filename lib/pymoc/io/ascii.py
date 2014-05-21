@@ -18,25 +18,22 @@ from __future__ import unicode_literals
 def write_moc_ascii(moc, filename=None, file=None):
     orders = []
 
-    for order in range(0, moc.order + 1):
-        cells = moc[order]
+    for (order, cells) in moc:
+        ranges = []
+        rmin = rmax = None
 
-        if cells:
-            ranges = []
-            rmin = rmax = None
+        for cell in sorted(cells):
+            if rmin is None:
+                rmin = rmax = cell
+            elif rmax == cell - 1:
+                rmax = cell
+            else:
+                ranges.append(_format_range(rmin, rmax))
+                rmin = rmax = cell
 
-            for cell in sorted(cells):
-                if rmin is None:
-                    rmin = rmax = cell
-                elif rmax == cell - 1:
-                    rmax = cell
-                else:
-                    ranges.append(_format_range(rmin, rmax))
-                    rmin = rmax = cell
+        ranges.append(_format_range(rmin, rmax))
 
-            ranges.append(_format_range(rmin, rmax))
-
-            orders.append('{0}'.format(order) + '/' + ','.join(ranges))
+        orders.append('{0}'.format(order) + '/' + ','.join(ranges))
 
     if file is not None:
         _write_ascii(orders, file)

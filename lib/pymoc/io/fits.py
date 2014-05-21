@@ -46,9 +46,9 @@ def write_moc_fits_hdu(moc):
     # top two bits is set so that the order of the value can be
     # determined.
     nuniq = []
-    for order in range(0, moc.order + 1):
+    for (order, cells) in moc:
         uniq_prefix = 4 * (4 ** order)
-        for npix in moc[order]:
+        for npix in cells:
             nuniq.append(npix + uniq_prefix)
 
     # Prepare the data, and sort into numerical order.
