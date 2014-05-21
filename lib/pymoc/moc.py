@@ -15,6 +15,8 @@
 
 from __future__ import absolute_import
 
+from math import pi
+
 MAX_ORDER = 29
 
 MOC_TYPES = ('IMAGE', 'CATALOG')
@@ -82,6 +84,26 @@ class MOC(object):
     @property
     def normalized(self):
         return self._normalized
+
+    @property
+    def area(self):
+        """The area enclosed by the MOC, in steradians.
+        """
+
+        self.normalize()
+        area = 0.0
+
+        for (order, cells) in self:
+            area += (len(cells) * pi) / (3 * 4 ** order)
+
+        return area
+
+    @property
+    def area_sq_deg(self):
+        """The area enclosed by the MOC, in square degrees.
+        """
+
+        return self.area * ((180 / pi ) ** 2)
 
     def add(self, order, cells):
         self._normalized = False
