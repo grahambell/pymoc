@@ -107,6 +107,9 @@ class MOC(object):
         self._orders[order].update(cell_set)
 
     def normalize(self, max_order=MAX_ORDER):
+        if not 0 <= max_order <= MAX_ORDER:
+            raise ValueError('MOC order must be in range 0-{0}'.format(MAX_ORDER))
+
         # If the MOC is already normalized and we are not being asked
         # to reduce the order, then do nothing.
         if self.normalized and max_order >= self.order:
