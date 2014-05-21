@@ -16,7 +16,7 @@
 from unittest import TestCase
 
 from pymoc import MOC
-from pymoc.io.fits import read_moc_fits_hdu
+from pymoc.io.fits import read_moc_fits_hdu, write_moc_fits_hdu
 
 class FITSTestCase(TestCase):
     def test_fits(self):
@@ -24,7 +24,7 @@ class FITSTestCase(TestCase):
         orig.add(10, [5, 6, 7, 8])
         orig.add(11, [1000, 1001, 2000])
 
-        hdu = orig.write_fits_hdu()
+        hdu = write_moc_fits_hdu(orig)
 
         copy = MOC()
         read_moc_fits_hdu(copy, hdu)
@@ -37,7 +37,7 @@ class FITSTestCase(TestCase):
         orig = MOC()
         orig.add(13, [805306367])
 
-        hdu = orig.write_fits_hdu()
+        hdu = write_moc_fits_hdu(orig)
         self.assertIn('J', hdu.header['TFORM1'])
 
         copy = MOC()
@@ -50,7 +50,7 @@ class FITSTestCase(TestCase):
         orig = MOC()
         orig.add(14, [0])
 
-        hdu = orig.write_fits_hdu()
+        hdu = write_moc_fits_hdu(orig)
         self.assertIn('K', hdu.header['TFORM1'])
 
         copy = MOC()
@@ -63,7 +63,7 @@ class FITSTestCase(TestCase):
         orig = MOC()
         orig.add(29, [3458700000000000000])
 
-        hdu = orig.write_fits_hdu()
+        hdu = write_moc_fits_hdu(orig)
         self.assertIn('K', hdu.header['TFORM1'])
 
         copy = MOC()

@@ -15,12 +15,6 @@
 
 from __future__ import absolute_import
 
-from astropy.io import fits
-from datetime import datetime
-import numpy as np
-
-from .version import version
-
 MAX_ORDER = 29
 
 MOC_TYPES = ('IMAGE', 'CATALOG')
@@ -173,78 +167,6 @@ class MOC(object):
                 self._orders[order].update(new_pixels)
 
         self._normalized = True
-
-    def write_fits_hdu(self):
-        # Ensure data are normalized.
-        self.normalize()
-
-        # Determine whether a 32 or 64 bit column is required.
-        if self.order < 14:
-            moc_type = np.int32
-            col_type = 'J'
-        else:
-            moc_type = np.int64
-            col_type = 'K'
-
-        # Convert to the NUNIQ value which guarantees that one of the
-        # top two bits is set so that the order of the value can be
-        # determined.
-        nuniq = []
-        for order in range(0, MAX_ORDER + 1):
-            uniq_prefix = 4 * (4 ** order)
-            for npix in self._orders[order]:
-                nuniq.append(npix + uniq_prefix)
-
-        # Prepare the data, and sort into numerical order.
-        nuniq = np.array(nuniq, dtype=moc_type)
-        nuniq.sort()
-
-        # Create the FITS file.
-        col = fits.Column(name='NPIX', format=col_type, array=nuniq)
-
-        cols = fits.ColDefs([col])
-        rec = fits.FITS_rec.from_columns(cols)
-        tbhdu = fits.BinTableHDU(rec)
-
-        # Mandatory Keywords.
-        tbhdu.header['PIXTYPE'] = 'HEALPIX'
-        tbhdu.header['ORDERING'] = 'NUNIQ'
-        tbhdu.header['COORDSYS'] = 'C'
-        tbhdu.header['MOCORDER'] = self.order
-        tbhdu.header.comments['PIXTYPE'] = 'HEALPix magic code'
-        tbhdu.header.comments['ORDERING'] = 'NUNIQ coding method'
-        tbhdu.header.comments['COORDSYS'] = 'ICRS reference frame'
-        tbhdu.header.comments['MOCORDER'] = 'MOC resolution (best order)'
-
-        # Optional Keywords.
-        tbhdu.header['MOCTOOL'] = 'PyMOC ' + version
-        tbhdu.header.comments['MOCTOOL'] = 'Name of MOC generator'
-        if self.type is not None:
-            tbhdu.header['MOCTYPE'] = self.type
-            tbhdu.header.comments['MOCTYPE'] = 'Source type (IMAGE or CATALOG)'
-        if self.id is not None:
-            tbhdu.header['MOCID'] = self.id
-            tbhdu.header.comments['MOCID'] = 'Identifier of the collection'
-        if self.origin is not None:
-            tbhdu.header['ORIGIN'] = self.origin
-            tbhdu.header.comments['ORIGIN'] = 'MOC origin'
-        tbhdu.header['DATE'] = datetime.utcnow().replace(
-                microsecond=0).isoformat()
-        tbhdu.header.comments['DATE'] = 'MOC creation date'
-        if self.name is not None:
-            tbhdu.header['EXTNAME'] = self.name
-            tbhdu.header.comments['EXTNAME'] = 'MOC name'
-
-        return tbhdu
-
-    def write_fits(self, filename):
-        """Write to a FITS file."""
-
-        tbhdu = self.write_fits_hdu()
-        prihdr = fits.Header()
-        prihdu = fits.PrimaryHDU(header=prihdr)
-        hdulist = fits.HDUList([prihdu, tbhdu])
-        hdulist.writeto(filename)
 
     def _order_num_cells(self, order):
         """Determine the number of possible cells for an order."""
