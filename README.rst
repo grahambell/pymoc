@@ -1,12 +1,45 @@
 Multi-Order Coverage map module for Python
 ==========================================
 
+Introduction
+------------
+
+.. startpymocintro
+
+PyMOC is a module for manipulating Multi-Order Coverage (MOC)
+maps.  It includes support for reading and writing the three
+encodings mentioned in the IVOA recommendation: FITS, JSON
+and ASCII.
+
+.. endpymocintro
+
+.. startpymocinstall
+
 Installation
 ------------
 
 The module can be installed using the ``setup.py`` script::
 
     python setup.py install
+
+Unit Tests
+~~~~~~~~~~
+
+Prior to installation, the unit tests can be run using::
+
+    PYTHONPATH=lib python3 -m unittest
+
+or::
+
+    PYTHONPATH=lib python2 -m unittest discover
+
+Requirements
+~~~~~~~~~~~~
+
+For reading and writing data in FITS format, the ``astropy``
+library is required.
+
+.. endpymocinstall
 
 License
 -------
