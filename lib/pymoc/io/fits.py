@@ -31,6 +31,9 @@ import numpy as np
 from ..version import version
 
 def write_moc_fits_hdu(moc):
+    """Create a FITS table HDU representation of a MOC.
+    """
+
     # Ensure data are normalized.
     moc.normalize()
 
@@ -94,7 +97,8 @@ def write_moc_fits_hdu(moc):
     return tbhdu
 
 def write_moc_fits(moc, filename):
-    """Write to a FITS file."""
+    """Write a MOC as a FITS file.
+    """
 
     tbhdu = write_moc_fits_hdu(moc)
     prihdr = fits.Header()
@@ -103,11 +107,17 @@ def write_moc_fits(moc, filename):
     hdulist.writeto(filename)
 
 def read_moc_fits(moc, filename):
+    """Read data from a FITS file into a MOC.
+    """
+
     hl = fits.open(filename, mode='readonly')
 
     read_moc_fits_hdu(moc, hl[1])
 
 def read_moc_fits_hdu(moc, hdu):
+    """Read data from a FITS table HDU into a MOC.
+    """
+
     current_order = None
     current_cells = []
 

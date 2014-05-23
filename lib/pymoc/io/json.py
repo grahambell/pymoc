@@ -19,6 +19,11 @@ from codecs import utf_8_decode, utf_8_encode
 import json
 
 def write_moc_json(moc, filename=None, file=None):
+    """Write a MOC in JSON encoding.
+
+    Either a filename, or an open file object can be specified.
+    """
+
     moc.normalize()
 
     obj = {}
@@ -33,6 +38,11 @@ def write_moc_json(moc, filename=None, file=None):
             _write_json(obj, f)
 
 def read_moc_json(moc, filename=None, file=None):
+    """Read JSON encoded data into a MOC.
+
+    Either a filename, or an open file object can be specified.
+    """
+
     if file is not None:
         obj = _read_json(file)
     else:

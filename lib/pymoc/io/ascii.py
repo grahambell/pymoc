@@ -16,6 +16,11 @@
 from __future__ import unicode_literals
 
 def write_moc_ascii(moc, filename=None, file=None):
+    """Write a MOC to an ASCII file.
+
+    Either a filename, or an open file object can be specified.
+    """
+
     orders = []
 
     for (order, cells) in moc:
@@ -42,6 +47,11 @@ def write_moc_ascii(moc, filename=None, file=None):
             _write_ascii(orders, f)
 
 def read_moc_ascii(moc, filename=None, file=None):
+    """Read from an ASCII file into a MOC.
+
+    Either a filename, or an open file object can be specified.
+    """
+
     if file is not None:
         orders = _read_ascii(file)
     else:

@@ -24,6 +24,13 @@ MOC_TYPES = ('IMAGE', 'CATALOG')
 class MOC(object):
     def __init__(self, order=None, cells=None, name=None, mocid=None,
             origin=None, moctype=None):
+        """Construct new MOC object.
+
+        By default the new MOC will be empty, but if an order and a
+        collection of cells are specified, then these will be added
+        to the new MOC.
+        """
+
         self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
         self._normalized = True
 
@@ -38,7 +45,7 @@ class MOC(object):
             raise ValueError('Only one of order and cells specified')
 
     def __iter__(self):
-        """Implement iterator for MOC objects.
+        """Iterator for MOC objects.
 
         This yields an order, cell set pair for each order at
         which there are cells.
@@ -49,6 +56,12 @@ class MOC(object):
                 yield (order, frozenset(self._orders[order]))
 
     def __getitem__(self, order):
+        """Subscripting operator for MOC objects.
+
+        This retrieves a collection of cells at the given order
+        of the MOC.
+        """
+
         if not isinstance(order, int):
             raise TypeError('MOC order must be an integer')
         elif not 0 <= order <= MAX_ORDER:
@@ -59,6 +72,9 @@ class MOC(object):
 
     @property
     def order(self):
+        """The highest order at which the MOC has cells.
+        """
+
         for order in range(MAX_ORDER, 0, -1):
             if self._orders[order]:
                 return order
@@ -67,10 +83,18 @@ class MOC(object):
 
     @property
     def type(self):
+        """The type of MOC (IMAGE or CATALOG).
+        """
+
         return self._type
 
     @type.setter
     def type(self, value):
+        """Set the type of the MOC.
+
+        The value should be either "IMAGE" or "CATALOG".
+        """
+
         self._type = None
         if value is None:
             return
@@ -83,6 +107,9 @@ class MOC(object):
 
     @property
     def normalized(self):
+        """Whether the MOC has been normalized or not.
+        """
+
         return self._normalized
 
     @property
@@ -106,6 +133,12 @@ class MOC(object):
         return self.area * ((180 / pi ) ** 2)
 
     def add(self, order, cells):
+        """Add cells at a given order to the MOC.
+
+        The cells are inserted into the MOC at the specified order.  This
+        leaves the MOC in an un-normalized state.
+        """
+
         self._normalized = False
 
         try:
@@ -134,6 +167,9 @@ class MOC(object):
         self._orders[order].update(cell_set)
 
     def normalize(self, max_order=MAX_ORDER):
+        """Ensure that the MOC is "well-formed".
+        """
+
         if not 0 <= max_order <= MAX_ORDER:
             raise ValueError('MOC order must be in range 0-{0}'.format(MAX_ORDER))
 
