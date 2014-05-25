@@ -46,7 +46,7 @@ def read_moc_json(moc, filename=None, file=None):
     if file is not None:
         obj = _read_json(file)
     else:
-        with open('filename', 'rb') as f:
+        with open(filename, 'rb') as f:
             obj = _read_json(f)
 
     for (order, cells) in obj.items():

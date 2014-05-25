@@ -55,7 +55,7 @@ def read_moc_ascii(moc, filename=None, file=None):
     if file is not None:
         orders = _read_ascii(file)
     else:
-        with open('filename', 'r') as f:
+        with open(filename, 'r') as f:
             orders = _read_ascii(f)
 
     for text in orders:
