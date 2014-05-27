@@ -16,29 +16,39 @@
 from __future__ import absolute_import
 
 from math import pi
+from os.path import isfile
 
 MAX_ORDER = 29
 
 MOC_TYPES = ('IMAGE', 'CATALOG')
 
 class MOC(object):
-    def __init__(self, order=None, cells=None, name=None, mocid=None,
-            origin=None, moctype=None):
+    def __init__(self, order=None, cells=None,
+            filename=None, filetype=None,
+            name=None, mocid=None, origin=None, moctype=None):
         """Construct new MOC object.
 
         By default the new MOC will be empty, but if an order and a
         collection of cells are specified, then these will be added
-        to the new MOC.
+        to the new MOC.  If a filename is specified then data
+        from the given file will be read into the new object.
         """
 
         self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
         self._normalized = True
 
+        if filename is not None:
+            # Read the file, including metadata if present.
+            self.read(filename, filetype, include_meta=True)
+
+        # Set any metadata explicity specified, overriding that
+        # read from the file.
         self.id = mocid
         self.name = name
         self.origin = origin
         self.type = moctype
 
+        # Add any cells specified in the arguments.
         if order is not None and cells is not None:
             self.add(order, cells)
         elif order is not None or cells is not None:
@@ -265,6 +275,101 @@ class MOC(object):
                 self._orders[order].update(new_pixels)
 
         self._normalized = True
+
+    def read(self, filename, filetype=None, include_meta=False):
+        """Read data from the given file into the MOC object.
+
+        The cell lists read from the file are added to the current
+        object.  Therefore if the object already contains some
+        cell, it will be updated to represent the union of the
+        current coverge and that from the file.
+
+        The file type can be specified as "fits", "json" or "ascii",
+        with "text" allowed as an alias for "ascii".  If the type
+        is not specified, then an attempt will be made to guess
+        from the file name, or the contents of the file.
+
+        Note that writing to FITS and JSON will cause the MOC
+        to be normalized automatically.
+        """
+
+        if filetype is not None:
+            filetype = filetype.lower()
+        else:
+            filetype = self._guess_file_type(filename)
+
+        if filetype == 'fits':
+            from .io.fits import read_moc_fits
+            read_moc_fits(self, filename, include_meta)
+
+        elif filetype == 'json':
+            from .io.json import read_moc_json
+            read_moc_json(self, filename)
+
+        elif filetype == 'ascii' or filetype == 'text':
+            from .io.ascii import read_moc_ascii
+            read_moc_ascii(self, filename)
+
+        else:
+            raise ValueError('Unknown MOC file type {0}'.format(filetype))
+
+    def write(self, filename, filetype=None):
+        """Write the converage data in the MOC object to a file.
+
+        The filetype can be given or left to be inferred as for the
+        read method.
+        """
+
+        if filetype is not None:
+            filetype = filetype.lower()
+        else:
+            filetype = self._guess_file_type(filename)
+
+        if filetype == 'fits':
+            from .io.fits import write_moc_fits
+            write_moc_fits(self, filename)
+
+        elif filetype == 'json':
+            from .io.json import write_moc_json
+            write_moc_json(self, filename)
+
+        elif filetype == 'ascii' or filetype == 'text':
+            from .io.ascii import write_moc_ascii
+            write_moc_ascii(self, filename)
+
+        else:
+            raise ValueError('Unknown MOC file type {0}'.format(filetype))
+
+    def _guess_file_type(self, filename):
+        """Attempt to guess the type of a MOC file.
+
+        Returns "fits", "json" or "ascii" if successful and raised
+        a ValueError otherwise.
+        """
+
+        # First attempt to guess from the file name.
+        namelc = filename.lower()
+
+        if namelc.endswith('.fits') or namelc.endswith('.fit'):
+            return 'fits'
+        elif namelc.endswith('.json'):
+            return 'json'
+        elif namelc.endswith('.txt') or namelc.endswith('.ascii'):
+            return 'ascii'
+
+        # Otherwise, if the file exists, look at the first character.
+        if isfile(filename):
+            with open(filename, 'r') as f:
+                c = f.read(1)
+
+            if c == 'S':
+                return 'fits'
+            elif c == '{':
+                return 'json'
+            elif c.isdigit():
+                return 'ascii'
+
+        raise ValueError('Unable to determine format of {0}'.format(filename))
 
     def _order_num_cells(self, order):
         """Determine the number of possible cells for an order."""

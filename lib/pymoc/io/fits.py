@@ -106,17 +106,29 @@ def write_moc_fits(moc, filename):
     hdulist = fits.HDUList([prihdu, tbhdu])
     hdulist.writeto(filename)
 
-def read_moc_fits(moc, filename):
+def read_moc_fits(moc, filename, include_meta=False):
     """Read data from a FITS file into a MOC.
     """
 
     hl = fits.open(filename, mode='readonly')
 
-    read_moc_fits_hdu(moc, hl[1])
+    read_moc_fits_hdu(moc, hl[1], include_meta)
 
-def read_moc_fits_hdu(moc, hdu):
+def read_moc_fits_hdu(moc, hdu, include_meta=False):
     """Read data from a FITS table HDU into a MOC.
     """
+
+    if include_meta:
+        header = hdu.header
+
+        if 'MOCTYPE' in header:
+            moc.type = header['MOCTYPE']
+        if 'MOCID' in header:
+            moc.id = header['MOCID']
+        if 'ORIGIN' in header:
+            moc.origin = header['ORIGIN']
+        if 'EXTNAME' in header:
+            moc.name = header['EXTNAME']
 
     current_order = None
     current_cells = []

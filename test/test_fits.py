@@ -71,3 +71,35 @@ class FITSTestCase(TestCase):
 
         self.assertEqual(copy.order, 29)
         self.assertEqual(copy[29], frozenset([3458700000000000000]))
+
+    def test_fits_meta(self):
+        # Write a FITS HDU including metadata and read it back.
+        orig = MOC(order=10, cells=(4, 5, 6, 7),
+                   name='test-moc',
+                   mocid='ivo://TEST/...', origin='ivo://TEST',
+                   moctype='image')
+
+        hdu = write_moc_fits_hdu(orig)
+        copy = MOC()
+        read_moc_fits_hdu(copy, hdu, include_meta=True)
+
+        self.assertEqual(copy.name, 'test-moc')
+        self.assertEqual(copy.id, 'ivo://TEST/...')
+        self.assertEqual(copy.origin, 'ivo://TEST')
+        self.assertEqual(copy.type, 'IMAGE')
+
+        # Check that the MOC was normalized.
+        self.assertEqual(copy.cells, 1)
+
+        # Now check we do not overwrite metadata unless requested.
+        other = MOC(order=10, cells=(4, 5, 6, 7),
+                    name='test-moc-modified',
+                    mocid='ivo://TEST2/...', origin='ivo://TEST2',
+                    moctype='catalog')
+
+        read_moc_fits_hdu(other, hdu, include_meta=False)
+
+        self.assertEqual(other.name, 'test-moc-modified')
+        self.assertEqual(other.id, 'ivo://TEST2/...')
+        self.assertEqual(other.origin, 'ivo://TEST2')
+        self.assertEqual(other.type, 'CATALOG')
