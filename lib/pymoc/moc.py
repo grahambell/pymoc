@@ -89,7 +89,7 @@ class MOC(object):
         if not isinstance(order, int):
             raise TypeError('MOC order must be an integer')
         elif not 0 <= order <= MAX_ORDER:
-            raise ValueError('MOC order must be in range 0-{0}'.format(
+            raise IndexError('MOC order must be in range 0-{0}'.format(
                     MAX_ORDER))
 
         return frozenset(self._orders[order])
