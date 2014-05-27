@@ -33,6 +33,12 @@ or::
 
     PYTHONPATH=lib python2 -m unittest discover
 
+The routines included in the doctests should also be covered by
+the unit tests.  However to ensure the documentation is correct,
+they can be checked with::
+
+    sphinx-build -b doctest doc doc/_build/doctest
+
 Requirements
 ~~~~~~~~~~~~
 
