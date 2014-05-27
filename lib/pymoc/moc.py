@@ -23,6 +23,16 @@ MAX_ORDER = 29
 MOC_TYPES = ('IMAGE', 'CATALOG')
 
 class MOC(object):
+    """Class representing Multi-Order Coverage maps.
+
+    Apart from the properties listed below, the MOC also includes
+    the following attributes:
+
+    * id
+    * name
+    * origin
+    """
+
     def __init__(self, order=None, cells=None,
             filename=None, filetype=None,
             name=None, mocid=None, origin=None, moctype=None):
@@ -31,7 +41,32 @@ class MOC(object):
         By default the new MOC will be empty, but if an order and a
         collection of cells are specified, then these will be added
         to the new MOC.  If a filename is specified then data
-        from the given file will be read into the new object.
+        from the given file will be read into the new object,
+        and if it is a FITS file, the metadata will also be read,
+        although this can be overridden by values given explicitly
+        as constructor arguments.
+
+        Additional metadata can be added to the MOC using the
+        ``name``, ``mocid``, ``origin`` and ``moctype`` arguments,
+        or added at a later time using the corresponding
+        attributes and properties.  The metadata values can be read from
+        and written to FITS files, but are not included when a MOC
+        is written to the other formats (JSON or ASCII).
+
+        >>> from pymoc import MOC
+        >>> m = MOC()
+        >>> m.cells
+        0
+
+        >>> m = MOC(10, (1234, 4321))
+        >>> m.cells
+        2
+
+        >>> m = MOC(name='example', moctype='IMAGE')
+        >>> m.name
+        'example'
+        >>> m.type
+        'IMAGE'
         """
 
         self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
@@ -57,8 +92,16 @@ class MOC(object):
     def __iter__(self):
         """Iterator for MOC objects.
 
-        This yields an order, cell set pair for each order at
-        which there are cells.
+        This yields an (order, cell collection) pair for each order at
+        which there are cells.  The results will be returned in
+        ascending order of the order number.
+
+        >>> m = MOC(0, (1, 2))
+        >>> m.add(1, (0,))
+        >>> for (order, cells) in m:
+        ...     print(order, sorted(cells))
+        0 [1, 2]
+        1 [0]
         """
 
         for order in range(0, MAX_ORDER + 1):
@@ -69,6 +112,10 @@ class MOC(object):
         """Length operator for MOC objects.
 
         Returns the number of orders at which the MOC has cells.
+
+        >>> m = MOC(0, (1, 2))
+        >>> len(m)
+        1
         """
 
         n = 0
@@ -84,6 +131,10 @@ class MOC(object):
 
         This retrieves a collection of cells at the given order
         of the MOC.
+
+        >>> m = MOC(5, (6, 7))
+        >>> sorted(m[5])
+        [6, 7]
         """
 
         if not isinstance(order, int):
@@ -97,6 +148,10 @@ class MOC(object):
     @property
     def order(self):
         """The highest order at which the MOC has cells.
+
+        >>> m = MOC(4, (3, 2, 1))
+        >>> m.order
+        4
         """
 
         for order in range(MAX_ORDER, 0, -1):
@@ -108,6 +163,14 @@ class MOC(object):
     @property
     def type(self):
         """The type of MOC (IMAGE or CATALOG).
+
+        >>> m = MOC(moctype='IMAGE')
+        >>> m.type
+        'IMAGE'
+
+        >>> m.type = 'CATALOG'
+        >>> m.type
+        'CATALOG'
         """
 
         return self._type
@@ -132,6 +195,16 @@ class MOC(object):
     @property
     def normalized(self):
         """Whether the MOC has been normalized or not.
+
+        >>> m = MOC()
+        >>> m.add(1, (0,))
+        >>> m.add(2, (1,))
+        >>> m.normalized
+        False
+
+        >>> m.normalize()
+        >>> m.normalized
+        True
         """
 
         return self._normalized
@@ -139,6 +212,10 @@ class MOC(object):
     @property
     def area(self):
         """The area enclosed by the MOC, in steradians.
+
+        >>> m = MOC(0, (0, 1, 2))
+        >>> round(m.area, 2)
+        3.14
         """
 
         self.normalize()
@@ -152,6 +229,11 @@ class MOC(object):
     @property
     def area_sq_deg(self):
         """The area enclosed by the MOC, in square degrees.
+
+        >>> from math import sqrt
+        >>> m = MOC(0, (0,))
+        >>> round(sqrt(m.area_sq_deg), 2)
+        58.63
         """
 
         return self.area * ((180 / pi ) ** 2)
@@ -162,6 +244,10 @@ class MOC(object):
 
         This gives the total number of cells at all orders,
         with cells from every order counted equally.
+
+        >>> m = MOC(0, (1, 2))
+        >>> m.cells
+        2
         """
 
         n = 0
@@ -175,7 +261,18 @@ class MOC(object):
         """Add cells at a given order to the MOC.
 
         The cells are inserted into the MOC at the specified order.  This
-        leaves the MOC in an un-normalized state.
+        leaves the MOC in an un-normalized state.  The cells are given
+        as a collection of integers (or types which can be converted
+        to integers).
+
+        >>> m = MOC()
+        >>> m.add(4, (20, 21))
+        >>> m.cells
+        2
+
+        >>> m.add(5, (88, 89))
+        >>> m.cells
+        4
         """
 
         self._normalized = False
@@ -207,6 +304,24 @@ class MOC(object):
 
     def normalize(self, max_order=MAX_ORDER):
         """Ensure that the MOC is "well-formed".
+
+        This structures the MOC as is required for the FITS and JSON
+        representation.  This method is invoked automatically when writing
+        to these formats.
+
+        The number of cells in the MOC will be minimized, so that
+        no area of the sky is covered multiple times by cells at
+        different orders, and if all four neighboring cells are
+        present at an order (other than order 0), they are merged
+        into their parent cell at the next lower order.
+
+        >>> m = MOC(1, (0, 1, 2, 3))
+        >>> m.cells
+        4
+
+        >>> m.normalize()
+        >>> m.cells
+        1
         """
 
         if not 0 <= max_order <= MAX_ORDER:
@@ -281,7 +396,7 @@ class MOC(object):
 
         The cell lists read from the file are added to the current
         object.  Therefore if the object already contains some
-        cell, it will be updated to represent the union of the
+        cells, it will be updated to represent the union of the
         current coverge and that from the file.
 
         The file type can be specified as "fits", "json" or "ascii",
