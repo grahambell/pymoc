@@ -55,6 +55,20 @@ class MOC(object):
             if self._orders[order]:
                 yield (order, frozenset(self._orders[order]))
 
+    def __len__(self):
+        """Length operator for MOC objects.
+
+        Returns the number of orders at which the MOC has cells.
+        """
+
+        n = 0
+
+        for order in range(0, MAX_ORDER + 1):
+            if self._orders[order]:
+                n += 1
+
+        return n
+
     def __getitem__(self, order):
         """Subscripting operator for MOC objects.
 
@@ -131,6 +145,21 @@ class MOC(object):
         """
 
         return self.area * ((180 / pi ) ** 2)
+
+    @property
+    def cells(self):
+        """The number of cells in the MOC.
+
+        This gives the total number of cells at all orders,
+        with cells from every order counted equally.
+        """
+
+        n = 0
+
+        for (order, cells) in self:
+            n += len(cells)
+
+        return n
 
     def add(self, order, cells):
         """Add cells at a given order to the MOC.
