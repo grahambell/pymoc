@@ -12,7 +12,8 @@ Contents
    :maxdepth: 2
 
    install
-   api
+   moc
+   io
 
 Indices and tables
 ------------------
