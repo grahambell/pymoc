@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PyMOC'
-copyright = '2014, Graham Bell'
+copyright = '2014, Science and Technology Facilities Council'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
