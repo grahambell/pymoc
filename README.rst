@@ -68,3 +68,4 @@ Additional Links
 
 * `Documentation at Read the Docs <http://pymoc.readthedocs.org/en/latest/>`_
 * `Repository at GitHub <https://github.com/grahambell/pymoc>`_
+* `Entry on PyPI <https://pypi.python.org/pypi/pymoc>`_
