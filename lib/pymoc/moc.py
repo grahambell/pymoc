@@ -145,6 +145,44 @@ class MOC(object):
 
         return frozenset(self._orders[order])
 
+    def __iadd__(self, other):
+        """In-place addition operator.
+
+        Updates the MOC to represent the union of itself and the other MOC.
+
+        >>> p = MOC(4, (5, 6))
+        >>> p += MOC(4, (7, 8))
+        >>> sorted(p[4])
+        [5, 6, 7, 8]
+        """
+
+        if not isinstance(other, MOC):
+            return NotImplemented
+
+        for (order, cells) in other:
+            self.add(order, cells)
+
+        return self
+
+    def __add__(self, other):
+        """Addition operator.
+
+        Returns a MOC which is the union of two MOCs.
+
+        >>> s = MOC(4, (5, 6)) + MOC(4, (7, 8))
+        >>> sorted(s[4])
+        [5, 6, 7, 8]
+        """
+
+        if not isinstance(other, MOC):
+            return NotImplemented
+
+        sum = self.copy()
+
+        sum += other
+
+        return sum
+
     @property
     def order(self):
         """The highest order at which the MOC has cells.
@@ -301,6 +339,22 @@ class MOC(object):
             cell_set.add(cell)
 
         self._orders[order].update(cell_set)
+
+    def copy(self):
+        """Return a copy of a MOC.
+
+        >>> p = MOC(4, (5, 6))
+        >>> q = p.copy()
+        >>> sorted(q[4])
+        [5, 6]
+        """
+
+        copy = MOC(name=self.name, mocid=self.id,
+                origin=self.origin, moctype=self.type)
+
+        copy += self
+
+        return copy
 
     def normalize(self, max_order=MAX_ORDER):
         """Ensure that the MOC is "well-formed".
