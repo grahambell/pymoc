@@ -99,7 +99,7 @@ class MOC(object):
         >>> m = MOC(0, (1, 2))
         >>> m.add(1, (0,))
         >>> for (order, cells) in m:
-        ...     print(order, sorted(cells))
+        ...     print(str(order) + ' ' + str(sorted(cells)))
         0 [1, 2]
         1 [0]
         """
