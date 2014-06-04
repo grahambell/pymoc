@@ -14,6 +14,7 @@ Contents
    install
    moc
    io
+   util
 
 Indices and tables
 ------------------
