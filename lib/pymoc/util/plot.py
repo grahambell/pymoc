@@ -19,7 +19,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_moc(moc, order=None, filename=None,
-        projection='cart', color='blue', title='', coord_sys='C', **kwargs):
+        projection='cart', color='blue', title='', coord_sys='C',
+        graticule=True, **kwargs):
     """Plot a MOC using Healpy.
     """
 
@@ -69,7 +70,8 @@ def plot_moc(moc, order=None, filename=None,
     # Plot the Numpy array using Healpy.
     plotter(map, nest=True, title=title, **plotargs)
 
-    healpy.visufunc.graticule()
+    if graticule:
+        healpy.visufunc.graticule()
 
     if filename is not None:
         plt.savefig(filename)
