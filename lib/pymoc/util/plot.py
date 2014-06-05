@@ -14,9 +14,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import healpy
+from matplotlib.cm import get_cmap
 import matplotlib.pyplot as plt
 import numpy as np
-from pylab import get_cmap
 
 def plot_moc(moc, order=None, filename=None,
         projection='cart', color='blue', title='', coord_sys='C', **kwargs):
