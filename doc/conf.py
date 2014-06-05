@@ -21,6 +21,18 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../lib'))
 
+# Allow autodoc documentation to be built without optional requirements
+# being installed.
+# See: https://docs.readthedocs.org/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
+# and: http://blog.rtwilson.com/how-to-make-your-sphinx-documentation-compile-with-readthedocs-when-youre-using-numpy-and-scipy/
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
+for mod_name in ('astropy', 'astropy.io', 'healpy',
+        'matplotlib', 'matplotlib.cm', 'matplotlib.pyplot', 'numpy'):
+    sys.modules[mod_name] = Mock()
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

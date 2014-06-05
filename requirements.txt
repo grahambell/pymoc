@@ -1,4 +1,1 @@
 astropy
-healpy
-numpy
-matplotlib
