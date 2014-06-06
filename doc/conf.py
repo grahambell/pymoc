@@ -30,7 +30,7 @@ try:
 except ImportError:
     from mock import Mock
 for mod_name in ('astropy', 'astropy.io', 'healpy',
-        'matplotlib', 'matplotlib.cm', 'matplotlib.pyplot', 'numpy'):
+        'matplotlib', 'matplotlib.colors', 'matplotlib.pyplot', 'numpy'):
     sys.modules[mod_name] = Mock()
 
 # -- General configuration ------------------------------------------------

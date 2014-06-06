@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import healpy
-from matplotlib.cm import get_cmap
+from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -40,11 +40,17 @@ def plot_moc(moc, order=None, filename=None,
         raise ValueError('Unknown projection: {0}'.format(projection))
 
     if color == 'blue':
-        plotargs['cmap'] = get_cmap('Blues')
+        plotargs['cmap'] = LinearSegmentedColormap.from_list(
+                            'white-blue', ['#FFFFFF', '#0000AA'])
     elif color == 'green':
-        plotargs.update({'cmap': get_cmap('Greens'), 'min': 0.0, 'max': 1.25})
+        plotargs['cmap'] = LinearSegmentedColormap.from_list(
+                            'white-green', ['#FFFFFF', '#008800'])
     elif color == 'red':
-        plotargs.update({'cmap': get_cmap('Reds'), 'min': 0.0, 'max': 1.5})
+        plotargs['cmap'] = LinearSegmentedColormap.from_list(
+                            'white-red', ['#FFFFFF', '#FF0000'])
+    elif color == 'black':
+        plotargs['cmap'] = LinearSegmentedColormap.from_list(
+                            'white-black', ['#FFFFFF', '#000000'])
     else:
         raise ValueError('Unknown color: {0}'.format(color))
 
