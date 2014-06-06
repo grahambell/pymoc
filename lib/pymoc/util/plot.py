@@ -18,7 +18,7 @@ from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_moc(moc, order=None, filename=None,
+def plot_moc(moc, order=None, antialias=0, filename=None,
         projection='cart', color='blue', title='', coord_sys='C',
         graticule=True, **kwargs):
     """Plot a MOC using Healpy.
@@ -69,9 +69,10 @@ def plot_moc(moc, order=None, filename=None,
     # Create a Numpy array which is zero for points outside the MOC and one
     # for points inside the MOC.
     map = np.zeros(12 * 4 ** order)
+    antialias_shift = 2 * antialias
 
-    for cell in moc.flattened(order):
-        map[cell] = 1
+    for cell in moc.flattened(order + antialias):
+        map[cell >> antialias_shift] += 1.0
 
     # Plot the Numpy array using Healpy.
     plotter(map, nest=True, title=title, **plotargs)
