@@ -478,6 +478,19 @@ class MOC(object):
         if operation == 'check':
             return False
 
+    def intersection(self, other):
+        """Returns a MOC representing the intersection with another MOC.
+
+        >>> p = MOC(2, (3, 4, 5))
+        >>> q = MOC(2, (4, 5, 6))
+        >>> i = p.intersection(q)
+        >>> sorted(i[2])
+        [4, 5]
+        """
+
+        d = self - other
+        return self - d
+
     def normalize(self, max_order=MAX_ORDER):
         """Ensure that the MOC is "well-formed".
 

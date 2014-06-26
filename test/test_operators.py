@@ -119,3 +119,22 @@ class OperatorsTestCase(TestCase):
 
         self.assertEqual(d.cells, 3)
         self.assertEqual(sorted(d[2]), [16, 17, 18])
+
+    def test_intersection(self):
+        p = MOC(0, (0,))
+        p.add(1, (4, 5, 6))
+
+        q = MOC(0, (1,))
+        q.add(1, (1, 2, 3))
+
+        i = p.intersection(q)
+
+        self.assertEqual(i.cells, 6)
+        self.assertEqual(sorted(i[1]), [1, 2, 3, 4, 5, 6])
+
+        p = MOC(0, (1,))
+        q = MOC(2, (15, 19))
+        i = p.intersection(q)
+
+        self.assertEqual(i.cells, 1)
+        self.assertEqual(sorted(i[2]), [19])
