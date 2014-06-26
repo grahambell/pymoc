@@ -19,4 +19,5 @@ pymoc.moc
     :members:
     :member-order: bysource
     :undoc-members:
-    :special-members: __init__, __iter__, __len__, __getitem__
+    :special-members: __init__, __iter__, __len__, __getitem__,
+                      __iadd__, __add__, __isub__, __sub__
