@@ -455,6 +455,9 @@ class MOC(object):
 
     def _compare_operation(self, order, cell, include_smaller, operation):
         """General internal method for comparison-based operations.
+
+        This is a private method, and does not update the normalized
+        flag.
         """
 
         # Check for a larger cell (lower order) which contains the
@@ -466,12 +469,14 @@ class MOC(object):
             if cell_i in self._orders[order_i]:
                 if operation == 'check':
                     return True
-                if operation == 'remove':
+                elif operation == 'remove':
                     # Remove the cell and break it into its 4 constituent
                     # cells.  Those which actually match the area we are
                     # trying to remove will be removed at the next stage.
                     self._orders[order_i].remove(cell_i)
                     self.add(order_i + 1, range(cell_i << 2, (cell_i + 1) << 2))
+                elif operation == 'inter':
+                    return (order, (cell,))
 
         # Check for the specific cell itself, but only after looking at larger
         # cells because for the "remove" operation we may have broken up
@@ -481,6 +486,8 @@ class MOC(object):
                 return True
             elif operation == 'remove':
                 self._orders[order].remove(cell)
+            elif operation == 'inter':
+                return (order, (cell,))
 
         if include_smaller:
             # Check for a smaller cell (higher order) which is part
@@ -488,20 +495,25 @@ class MOC(object):
             for order_i in range(order + 1, MAX_ORDER + 1):
                 shift = 2 * (order_i - order)
 
-                removal = []
+                cells = []
 
                 for cell_i in self._orders[order_i]:
                     if (cell_i >> shift) == cell:
                         if operation == 'check':
                             return True
-                        elif operation == 'remove':
-                            removal.append(cell_i)
+                        elif operation == 'remove' or operation == 'inter':
+                            cells.append(cell_i)
 
-                for cell_i in removal:
-                    self._orders[order_i].remove(cell_i)
+                if operation == 'remove':
+                    for cell_i in cells:
+                        self._orders[order_i].remove(cell_i)
+                elif operation == 'inter':
+                    return (order_i, cells)
 
         if operation == 'check':
             return False
+        else:
+            return None
 
     def intersection(self, other):
         """Returns a MOC representing the intersection with another MOC.
@@ -513,8 +525,15 @@ class MOC(object):
         [4, 5]
         """
 
-        d = self - other
-        return self - d
+        inter = MOC()
+
+        for (order, cells) in other:
+            for cell in cells:
+                i = self._compare_operation(order, cell, True, 'inter')
+                if i is not None:
+                    inter.add(*i)
+
+        return inter
 
     def normalize(self, max_order=MAX_ORDER):
         """Ensure that the MOC is "well-formed".
