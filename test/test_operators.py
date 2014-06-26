@@ -115,17 +115,14 @@ class OperatorsTestCase(TestCase):
 
     def test_remove(self):
         m = MOC(4, (10, 11, 12, 13))
-        self.assertEqual(m.cells, 4)
-
         m.remove(4, (10, 13))
-        self.assertEqual(sorted(m[4]), [11, 12])
+        self.assertEqual(m, MOC(4, (11, 12)))
 
     def test_isub(self):
         p = MOC(1, (3, 4, 5))
         p -= MOC(1, (4,))
 
-        self.assertEqual(p.cells, 2)
-        self.assertEqual(sorted(p[1]), [3, 5])
+        self.assertEqual(p, MOC(1, (3, 5)))
 
     def test_sub(self):
         p = MOC()
@@ -138,8 +135,7 @@ class OperatorsTestCase(TestCase):
 
         d = p - q
 
-        self.assertEqual(d.cells, 3)
-        self.assertEqual(sorted(d[2]), [16, 17, 18])
+        self.assertEqual(d, MOC(2, (16, 17, 18)))
 
     def test_intersection(self):
         p = MOC(0, (0,))
@@ -150,12 +146,10 @@ class OperatorsTestCase(TestCase):
 
         i = p.intersection(q)
 
-        self.assertEqual(i.cells, 6)
-        self.assertEqual(sorted(i[1]), [1, 2, 3, 4, 5, 6])
+        self.assertEqual(i, MOC(1, (1, 2, 3, 4, 5, 6)))
 
         p = MOC(0, (1,))
         q = MOC(2, (15, 19))
         i = p.intersection(q)
 
-        self.assertEqual(i.cells, 1)
-        self.assertEqual(sorted(i[2]), [19])
+        self.assertEqual(i, MOC(2, (19,)))
