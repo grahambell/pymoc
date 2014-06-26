@@ -43,6 +43,18 @@ class OperatorsTestCase(TestCase):
         self.assertEqual(sorted(q[1]), [2, 3])
         self.assertEqual(sorted(q[4]), [5, 6])
 
+    def test_clear(self):
+        p = MOC()
+        p.add(4, (5, 6))
+        p.add(0, (11,))
+        p.add(1, (42, 43, 44))
+        self.assertEqual(p.cells, 6)
+        self.assertEqual(p.normalized, False)
+
+        p.clear()
+        self.assertEqual(p.cells, 0)
+        self.assertEqual(p.normalized, True)
+
     def test_add(self):
         p = MOC(4, (11, 12))
         p.add(5, (100,))
