@@ -137,11 +137,7 @@ class MOC(object):
         [6, 7]
         """
 
-        if not isinstance(order, int):
-            raise TypeError('MOC order must be an integer')
-        elif not 0 <= order <= MAX_ORDER:
-            raise IndexError('MOC order must be in range 0-{0}'.format(
-                    MAX_ORDER))
+        order = self._validate_order(order)
 
         return frozenset(self._orders[order])
 
@@ -315,13 +311,7 @@ class MOC(object):
 
         self._normalized = False
 
-        try:
-            order = int(order)
-        except ValueError as e:
-            raise TypeError('MOC order must be convertable to int')
-
-        if not 0 <= order <= MAX_ORDER:
-            raise ValueError('MOC order must be in range 0-{0}'.format(MAX_ORDER))
+        order = self._validate_order(order)
 
         max_cells = self._order_num_cells(order)
         cell_set = set()
@@ -392,8 +382,7 @@ class MOC(object):
         1
         """
 
-        if not 0 <= max_order <= MAX_ORDER:
-            raise ValueError('MOC order must be in range 0-{0}'.format(MAX_ORDER))
+        max_order = self._validate_order(max_order)
 
         # If the MOC is already normalized and we are not being asked
         # to reduce the order, then do nothing.
@@ -587,3 +576,17 @@ class MOC(object):
         """Determine the number of possible cells for an order."""
 
         return 12 * 4 ** order
+
+    def _validate_order(self, order):
+        """Check that the given order is valid."""
+
+        try:
+            order = int(order)
+        except ValueError as e:
+            raise TypeError('MOC order must be convertable to int')
+
+        if not 0 <= order <= MAX_ORDER:
+            raise ValueError('MOC order must be in range 0-{0}'.format(
+                    MAX_ORDER))
+
+        return order
