@@ -313,19 +313,10 @@ class MOC(object):
 
         order = self._validate_order(order)
 
-        max_cells = self._order_num_cells(order)
         cell_set = set()
 
         for cell in cells:
-            try:
-                cell = int(cell)
-            except ValueError as e:
-                raise TypeError('MOC cell must be convertable to int')
-
-            if not 0 <= cell < max_cells:
-                raise ValueError('MOC cell order ' +
-                    '{0} must be in range 0-{1}'.format(order, max_cells - 1))
-
+            cell = self._validate_cell(order, cell)
             cell_set.add(cell)
 
         self._orders[order].update(cell_set)
@@ -590,3 +581,22 @@ class MOC(object):
                     MAX_ORDER))
 
         return order
+
+    def _validate_cell(self, order, cell):
+        """Check that the given cell is valid.
+
+        The order is assumed already to have been validated.
+        """
+
+        max_cells = self._order_num_cells(order)
+
+        try:
+            cell = int(cell)
+        except ValueError as e:
+            raise TypeError('MOC cell must be convertable to int')
+
+        if not 0 <= cell < max_cells:
+            raise ValueError('MOC cell order ' +
+                '{0} must be in range 0-{1}'.format(order, max_cells - 1))
+
+        return cell
