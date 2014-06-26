@@ -494,6 +494,8 @@ class MOC(object):
 
         if order is None:
             order = self.order
+        else:
+            order = self._validate_order(order)
 
         # Start with the cells which are already at this order.
         flat = set(self[order])
