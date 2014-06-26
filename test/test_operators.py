@@ -138,6 +138,12 @@ class OperatorsTestCase(TestCase):
         self.assertEqual(d, MOC(2, (16, 17, 18)))
 
     def test_intersection(self):
+        p = MOC(4, (10, 11, 12))
+        q = MOC(4, (9, 11, 13))
+        i = p.intersection(q)
+
+        self.assertEqual(i, MOC(4, (11,)))
+
         p = MOC(0, (0,))
         p.add(1, (4, 5, 6))
 
@@ -153,3 +159,9 @@ class OperatorsTestCase(TestCase):
         i = p.intersection(q)
 
         self.assertEqual(i, MOC(2, (19,)))
+
+        p.add(0, (2,))
+        q.add(0, (2,))
+        i = p.intersection(q)
+
+        self.assertEqual(i, MOC(0, (2,)) + MOC(2, (19,)))
