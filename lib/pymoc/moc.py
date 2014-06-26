@@ -179,6 +179,41 @@ class MOC(object):
 
         return sum
 
+    def __sub__(self, other):
+        """Subtraction operator.
+
+        Returns a MOC which is the copy of the first MOC with the
+        intersection with the second MOC removed.
+
+        >>> d = MOC(0, (0,)) - MOC(2, (15,))
+        >>> sorted(d[1])
+        [0, 1, 2]
+        >>> sorted(d[2])
+        [12, 13, 14]
+        """
+
+        if not isinstance(other, MOC):
+            return NotImplemented
+
+        diff = self.copy()
+        diff -= other
+
+        return diff
+
+    def __isub__(self, other):
+        """In-place subtraction operator.
+
+        Removes areas which overlap with the given MOC.
+        """
+
+        if not isinstance(other, MOC):
+            return NotImplemented
+
+        for (order, cells) in other:
+            self.remove(order, cells)
+
+        return self
+
     @property
     def order(self):
         """The highest order at which the MOC has cells.
@@ -321,6 +356,19 @@ class MOC(object):
 
         self._orders[order].update(cell_set)
 
+    def remove(self, order, cells):
+        """Remove cells at a given order from the MOC.
+        """
+
+        self._normalized = False
+
+        order = self._validate_order(order)
+
+        for cell in cells:
+            cell = self._validate_cell(order, cell)
+
+            self._compare_operation(order, cell, True, 'remove')
+
     def clear(self):
         """Clears all cells from a MOC.
 
@@ -378,16 +426,36 @@ class MOC(object):
         order = self._validate_order(order)
         cell = self._validate_cell(order, cell)
 
-        if cell in self._orders[order]:
-            return True
+        return self._compare_operation(order, cell, include_smaller, 'check')
+
+    def _compare_operation(self, order, cell, include_smaller, operation):
+        """General internal method for comparison-based operations.
+        """
 
         # Check for a larger cell (lower order) which contains the
         # given cell.
         for order_i in range(0, order):
             shift = 2 * (order - order_i)
+            cell_i = cell >> shift
 
-            if (cell >> shift) in self[order_i]:
+            if cell_i in self._orders[order_i]:
+                if operation == 'check':
+                    return True
+                if operation == 'remove':
+                    # Remove the cell and break it into its 4 constituent
+                    # cells.  Those which actually match the area we are
+                    # trying to remove will be removed at the next stage.
+                    self._orders[order_i].remove(cell_i)
+                    self.add(order_i + 1, range(cell_i << 2, (cell_i + 1) << 2))
+
+        # Check for the specific cell itself, but only after looking at larger
+        # cells because for the "remove" operation we may have broken up
+        # one of the large cells so that it subsequently matches.
+        if cell in self._orders[order]:
+            if operation == 'check':
                 return True
+            elif operation == 'remove':
+                self._orders[order].remove(cell)
 
         if include_smaller:
             # Check for a smaller cell (higher order) which is part
@@ -395,11 +463,20 @@ class MOC(object):
             for order_i in range(order + 1, MAX_ORDER + 1):
                 shift = 2 * (order_i - order)
 
-                for cell_i in self[order_i]:
-                    if (cell_i >> shift) == cell:
-                        return True
+                removal = []
 
-        return False
+                for cell_i in self._orders[order_i]:
+                    if (cell_i >> shift) == cell:
+                        if operation == 'check':
+                            return True
+                        elif operation == 'remove':
+                            removal.append(cell_i)
+
+                for cell_i in removal:
+                    self._orders[order_i].remove(cell_i)
+
+        if operation == 'check':
+            return False
 
     def normalize(self, max_order=MAX_ORDER):
         """Ensure that the MOC is "well-formed".

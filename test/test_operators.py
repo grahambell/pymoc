@@ -91,3 +91,31 @@ class OperatorsTestCase(TestCase):
         self.assertEqual(s.cells, 5)
         self.assertEqual(sorted(s[4]), [11, 12, 13])
         self.assertEqual(sorted(s[5]), [100, 101])
+
+    def test_remove(self):
+        m = MOC(4, (10, 11, 12, 13))
+        self.assertEqual(m.cells, 4)
+
+        m.remove(4, (10, 13))
+        self.assertEqual(sorted(m[4]), [11, 12])
+
+    def test_isub(self):
+        p = MOC(1, (3, 4, 5))
+        p -= MOC(1, (4,))
+
+        self.assertEqual(p.cells, 2)
+        self.assertEqual(sorted(p[1]), [3, 5])
+
+    def test_sub(self):
+        p = MOC()
+        p.add(1, (3, 4, 5))
+
+        q = MOC()
+        q.add(0, (0,))
+        q.add(1, (5,))
+        q.add(2, (19,))
+
+        d = p - q
+
+        self.assertEqual(d.cells, 3)
+        self.assertEqual(sorted(d[2]), [16, 17, 18])
