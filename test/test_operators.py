@@ -142,6 +142,7 @@ class OperatorsTestCase(TestCase):
         q = MOC(4, (9, 11, 13))
         i = p.intersection(q)
 
+        self.assertFalse(i.normalized)
         self.assertEqual(i, MOC(4, (11,)))
 
         p = MOC(0, (0,))
@@ -152,16 +153,19 @@ class OperatorsTestCase(TestCase):
 
         i = p.intersection(q)
 
+        self.assertFalse(i.normalized)
         self.assertEqual(i, MOC(1, (1, 2, 3, 4, 5, 6)))
 
         p = MOC(0, (1,))
         q = MOC(2, (15, 19))
         i = p.intersection(q)
 
+        self.assertFalse(i.normalized)
         self.assertEqual(i, MOC(2, (19,)))
 
         p.add(0, (2,))
         q.add(0, (2,))
         i = p.intersection(q)
 
+        self.assertFalse(i.normalized)
         self.assertEqual(i, MOC(0, (2,)) + MOC(2, (19,)))
