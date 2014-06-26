@@ -141,6 +141,31 @@ class MOC(object):
 
         return frozenset(self._orders[order])
 
+    def __eq__(self, other):
+        """Equality test operator.
+
+        >>> MOC(1, (4, 5, 6, 7)) == MOC(0, (1,))
+        True
+        >>> MOC(2, (0, 1)) == MOC(0, (0,))
+        False
+        >>> MOC(1, (5, 6)) != MOC(1, (1, 2))
+        True
+        >>> MOC(2, (8, 9, 10, 11)) != MOC(1, (2,))
+        False
+        """
+
+        if not isinstance(other, MOC):
+            return NotImplemented
+
+        self.normalize()
+        other.normalize()
+
+        for order in range(0, MAX_ORDER + 1):
+            if self._orders[order] != other._orders[order]:
+                return False
+
+        return True
+
     def __iadd__(self, other):
         """In-place addition operator.
 

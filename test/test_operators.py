@@ -18,6 +18,27 @@ from unittest import TestCase
 from pymoc import MOC
 
 class OperatorsTestCase(TestCase):
+    def test_eq(self):
+        self.assertEqual(
+            MOC(1, (4,)),
+            MOC(2, (16, 17, 18, 19)))
+
+        self.assertEqual(
+            MOC(4, (5, 6)),
+            MOC(4, (6, 5)))
+
+        self.assertNotEqual(
+            MOC(4, (5, 6)),
+            MOC(4, (5, 6, 7)))
+
+        self.assertNotEqual(
+            MOC(5, (10,)),
+            MOC(6, (10,)))
+
+        self.assertNotEqual(
+            MOC(3, (4, 5, 6)),
+            MOC(3, (4, 5, 6)) + MOC(10, (0,)))
+
     def test_iadd(self):
         p = MOC(4, (11, 12))
         p.add(5, (100,))
