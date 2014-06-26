@@ -31,6 +31,25 @@ class OperatorsTestCase(TestCase):
         self.assertEqual(sorted(p[4]), [11, 12, 13])
         self.assertEqual(sorted(p[5]), [100, 101])
 
+    def test_contains(self):
+        m = MOC()
+        m.add(0, (10, 11))
+        m.add(1, (36, 37))
+        m.add(2, (128, 129))
+        m.add(3, (448, 499))
+
+        self.assertEqual(m.contains(0, 10), True)
+        self.assertEqual(m.contains(0, 11), True)
+
+        self.assertEqual(m.contains(0, 0, True), False)
+        self.assertEqual(m.contains(0, 0, False), False)
+
+        self.assertEqual(m.contains(1, 40), True)
+        self.assertEqual(m.contains(2, 160), True)
+
+        self.assertEqual(m.contains(0, 7, True), True)
+        self.assertEqual(m.contains(0, 7, False), False)
+
     def test_copy(self):
         # TODO: check metadata copying
 

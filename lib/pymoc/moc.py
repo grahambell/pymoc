@@ -351,6 +351,56 @@ class MOC(object):
 
         return copy
 
+    def contains(self, order, cell, include_smaller=False):
+        """Test whether the MOC contains the given cell.
+
+        If the include_smaller argument is true then the MOC is considered
+        to include a cell if it includes part of that cell (at a higher
+        order).
+
+        >>> m = MOC(1, (5,))
+        >>> m.contains(0, 0)
+        False
+        >>> m.contains(0, 1, True)
+        True
+        >>> m.contains(0, 1, False)
+        False
+        >>> m.contains(1, 4)
+        False
+        >>> m.contains(1, 5)
+        True
+        >>> m.contains(2, 19)
+        False
+        >>> m.contains(2, 21)
+        True
+        """
+
+        order = self._validate_order(order)
+        cell = self._validate_cell(order, cell)
+
+        if cell in self._orders[order]:
+            return True
+
+        # Check for a larger cell (lower order) which contains the
+        # given cell.
+        for order_i in range(0, order):
+            shift = 2 * (order - order_i)
+
+            if (cell >> shift) in self[order_i]:
+                return True
+
+        if include_smaller:
+            # Check for a smaller cell (higher order) which is part
+            # of the given cell.
+            for order_i in range(order + 1, MAX_ORDER + 1):
+                shift = 2 * (order_i - order)
+
+                for cell_i in self[order_i]:
+                    if (cell_i >> shift) == cell:
+                        return True
+
+        return False
+
     def normalize(self, max_order=MAX_ORDER):
         """Ensure that the MOC is "well-formed".
 
