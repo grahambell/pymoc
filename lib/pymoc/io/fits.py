@@ -59,7 +59,7 @@ def write_moc_fits_hdu(moc):
     nuniq.sort()
 
     # Create the FITS file.
-    col = fits.Column(name='NPIX', format=col_type, array=nuniq)
+    col = fits.Column(name='UNIQ', format=col_type, array=nuniq)
 
     cols = fits.ColDefs([col])
     rec = fits.FITS_rec.from_columns(cols)
