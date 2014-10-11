@@ -33,7 +33,7 @@ setup(
     author_email='g.bell@jach.hawaii.edu',
     url='http://github.com/grahambell/pymoc',
     package_dir={'': 'lib'},
-    packages=['pymoc', 'pymoc.io'],
+    packages=['pymoc', 'pymoc.io', 'pymoc.util'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
