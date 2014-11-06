@@ -654,7 +654,7 @@ class MOC(object):
 
         return flat
 
-    def read(self, filename, filetype=None, include_meta=False):
+    def read(self, filename, filetype=None, include_meta=False, **kwargs):
         """Read data from the given file into the MOC object.
 
         The cell lists read from the file are added to the current
@@ -669,6 +669,10 @@ class MOC(object):
 
         Note that writing to FITS and JSON will cause the MOC
         to be normalized automatically.
+
+        Any additional keyword arguments (kwargs) are passed on to
+        the corresponding pymoc.io read functions (read_moc_fits,
+        read_moc_json or read_moc_ascii).
         """
 
         if filetype is not None:
@@ -678,24 +682,29 @@ class MOC(object):
 
         if filetype == 'fits':
             from .io.fits import read_moc_fits
-            read_moc_fits(self, filename, include_meta)
+            read_moc_fits(self, filename, include_meta, **kwargs)
 
         elif filetype == 'json':
             from .io.json import read_moc_json
-            read_moc_json(self, filename)
+            read_moc_json(self, filename, **kwargs)
 
         elif filetype == 'ascii' or filetype == 'text':
             from .io.ascii import read_moc_ascii
-            read_moc_ascii(self, filename)
+            read_moc_ascii(self, filename, **kwargs)
 
         else:
             raise ValueError('Unknown MOC file type {0}'.format(filetype))
 
-    def write(self, filename, filetype=None):
+    def write(self, filename, filetype=None, **kwargs):
         """Write the converage data in the MOC object to a file.
 
         The filetype can be given or left to be inferred as for the
         read method.
+
+        Any additional keyword arguments (kwargs) are passed on to
+        the corresponding pymoc.io write functions (write_moc_fits,
+        write_moc_json or write_moc_ascii).  This can be used, for
+        example, to set clobber=True when writing FITS files.
         """
 
         if filetype is not None:
@@ -705,15 +714,15 @@ class MOC(object):
 
         if filetype == 'fits':
             from .io.fits import write_moc_fits
-            write_moc_fits(self, filename)
+            write_moc_fits(self, filename, **kwargs)
 
         elif filetype == 'json':
             from .io.json import write_moc_json
-            write_moc_json(self, filename)
+            write_moc_json(self, filename, **kwargs)
 
         elif filetype == 'ascii' or filetype == 'text':
             from .io.ascii import write_moc_ascii
-            write_moc_ascii(self, filename)
+            write_moc_ascii(self, filename, **kwargs)
 
         else:
             raise ValueError('Unknown MOC file type {0}'.format(filetype))
