@@ -104,6 +104,13 @@ class MOCTool(object):
         print('Cells:', self.moc.cells)
         print('Area:', self.moc.area_sq_deg, 'square degrees')
 
+    @command('--intersection')
+    def intersection(self):
+        """Compute the intersection with the given MOC."""
+
+        filename = self.params.pop()
+        self.moc = self.moc.intersection(MOC(filename=filename))
+
     @command('--normalize')
     def normalize(self):
         """Normalize the MOC to a given level."""
@@ -117,3 +124,10 @@ class MOCTool(object):
 
         filename = self.params.pop()
         self.moc.write(filename)
+
+    @command('--subtract')
+    def subtract(self):
+        """Subtract the given MOC from the running MOC."""
+
+        filename = self.params.pop()
+        self.moc -= MOC(filename=filename)
