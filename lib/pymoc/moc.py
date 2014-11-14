@@ -166,6 +166,14 @@ class MOC(object):
 
         return True
 
+    def __ne__(self, other):
+        """Inequality test operator.
+
+        Implemented via __eq__.
+        """
+
+        return not self.__eq__(other)
+
     def __iadd__(self, other):
         """In-place addition operator.
 
