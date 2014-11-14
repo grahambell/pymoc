@@ -11,6 +11,9 @@ maps.  It includes support for reading and writing the three
 encodings mentioned in the IVOA recommendation: FITS, JSON
 and ASCII.
 
+PyMOC also includes a utility program ``pymoctool`` to allow
+MOC files to be manipulated from the command line.
+
 .. endpymocintro
 
 .. startpymocinstall
