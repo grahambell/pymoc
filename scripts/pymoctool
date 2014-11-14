@@ -17,6 +17,7 @@
 
 from __future__ import print_function
 
+from os.path import basename
 import sys
 
 from pymoc.util.tool import MOCTool, CommandError
@@ -25,13 +26,14 @@ from pymoc.util.tool import MOCTool, CommandError
 def main():
     """Main routine to run the pymoc tool."""
 
+    name = basename(sys.argv[0])
     tool = MOCTool()
 
     try:
         tool.run(sys.argv[1:])
 
     except CommandError as e:
-        print(e.message, file=sys.stderr)
+        print(name + ':', e.message, file=sys.stderr)
         sys.exit(1)
 
 if __name__ == '__main__':
