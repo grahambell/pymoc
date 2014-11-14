@@ -1,3 +1,8 @@
+0.3.0 2014-11-14
+
+    - A command line utility "pymoctool" has been included in the package.
+    - Additional keywords are now passed to FITS open and writeto functions.
+
 0.2.0 2014-10-10
 
     - Updated FITS table column name based on the IVOA version 1.0

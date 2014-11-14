@@ -34,8 +34,9 @@ setup(
     url='http://github.com/grahambell/pymoc',
     package_dir={'': 'lib'},
     packages=['pymoc', 'pymoc.io', 'pymoc.util'],
+    scripts=['scripts/pymoctool'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Topic :: Scientific/Engineering :: Astronomy',
