@@ -15,7 +15,8 @@
 
 """pymoctool - PyMOC utility program
 
-Usage:
+Usage::
+
     pymoctool [INPUT]... [COMMAND [FILE]]... [--output OUTPUT]
 
 This program can be used to manipulate MOC files.  All formats handled
@@ -24,8 +25,10 @@ by PyMOC (FITS, JSON and ASCII) are supported.  The program maintains a
 on the "running" MOC.  Input files and commands are processed in the order
 given to the command.
 
-For example, this command:
+For example, this command::
+
     pymoctool a.fits --output a.json b.fits --output merged.txt
+
 would load a MOC "a.fits", re-write it as "a.json", merge (forming the union
 with) "b.fits" and write the combined MOC to "merged.txt".
 """
@@ -175,6 +178,8 @@ class MOCTool(object):
         This command takes the name of a MOC file and forms the intersection
         of the running MOC with that file.
 
+        ::
+
             pymoctool a.fits --intersection b.fits --output intersection.fits
         """
 
@@ -187,6 +192,8 @@ class MOCTool(object):
 
         This command takes a MOC order (0-29) and normalizes the MOC so that
         its maximum order is the given order.
+
+        ::
 
             pymoctool a.fits --normalize 10 --output a_10.fits
         """
@@ -208,6 +215,8 @@ class MOCTool(object):
         This command takes the name of a MOC file to be subtracted from the
         running MOC.
 
+        ::
+
             pymoctool a.fits --subtract b.fits --output difference.fits
         """
 
@@ -225,4 +234,11 @@ class MOCTool(object):
 
         lines = docstring.strip().splitlines()
 
-        return (lines[0].strip(), textwrap.dedent('\n'.join(lines[2:])))
+        synopsis = lines[0].strip()
+        body = textwrap.dedent('\n'.join(lines[2:]))
+
+        # Remove RST preformatted text markers.
+        body = body.replace('\n::\n', '')
+        body = body.replace('::\n', ':')
+
+        return (synopsis, body)
