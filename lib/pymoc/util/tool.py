@@ -131,6 +131,69 @@ class MOCTool(object):
         else:
             self.moc.read(filename)
 
+    @command('--catalog')
+    def help(self):
+        """Create MOC from catalog of coordinates.
+
+        This command requires that the Healpy and Astropy libraries
+        be available.  It attempts to load the given catalog,
+        and merges it with the running MOC.
+
+        The name of an ASCII catalog file should be given.  The file
+        should contain either "RA" and "Dec" columns (for ICRS coordinates)
+        or "Lon" and "Lat" columns (for galactic coordinates).  The MOC
+        order and radius (in arcseconds) can be given with additional
+        options.
+
+        ::
+
+            pymoctool --catalog coords.txt [order 12] [radius 3600]
+        """
+
+        from astropy.coordinates import SkyCoord
+        from astropy.io import ascii
+        from astropy.units import hour, degree
+        from .catalog import catalog_to_moc
+
+        filename = self.params.pop()
+        order = 12
+        radius = 3600
+
+        while self.params:
+            if self.params[-1] == 'order':
+                self.params.pop()
+                order = int(self.params.pop())
+            elif self.params[-1] == 'radius':
+                self.params.pop()
+                radius = float(self.params.pop())
+            else:
+                break
+
+        catalog = ascii.read(filename)
+        columns = catalog.columns
+
+        if 'RA' in columns and 'Dec' in columns:
+            coords = SkyCoord(catalog['RA'],
+                              catalog['Dec'],
+                              unit=(hour, degree),
+                              frame='icrs')
+
+        elif 'Lat' in columns and 'Lon' in columns:
+            coords = SkyCoord(catalog['Lon'],
+                              catalog['Lat'],
+                              unit=(degree, degree),
+                              frame='galactic')
+
+        else:
+            raise CommandError('columns RA,Dec or Lon,Lat not found')
+
+        catalog_moc = catalog_to_moc(coords, radius, order)
+
+        if self.moc is None:
+            self.moc = catalog_moc
+        else:
+            self.moc += catalog_moc
+
     @command('--help', '-h')
     def help(self):
         """Display command usage information."""
