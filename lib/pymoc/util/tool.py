@@ -151,9 +151,18 @@ class MOCTool(object):
                 [order 12]
                 [radius 3600]
                 [unit (hour | deg | rad) (deg | rad)]
+                [format commented_header]
 
         Units (if not specified) are assumed to be hours and degrees for ICRS
-        coordinates and degrees for galactic coordinates.
+        coordinates and degrees for galactic coordinates.  The format, if not
+        specified (as an Astropy ASCII table format name) is assumed to be
+        commented header, e.g.:
+
+        ::
+
+            # RA Dec
+            01:30:00 +45:00:00
+            22:30:00 +45:00:00
         """
 
         from astropy.coordinates import SkyCoord
@@ -165,6 +174,7 @@ class MOCTool(object):
         order = 12
         radius = 3600
         unit = None
+        format_ = 'commented_header'
 
         while self.params:
             if self.params[-1] == 'order':
@@ -178,10 +188,13 @@ class MOCTool(object):
                 unit_x = self.params.pop()
                 unit_y = self.params.pop()
                 unit = (unit_x, unit_y)
+            elif self.params[-1] == 'format':
+                self.params.pop()
+                format_ = self.params.pop()
             else:
                 break
 
-        catalog = ascii.read(filename)
+        catalog = ascii.read(filename, format=format_)
         columns = catalog.columns
 
         if 'RA' in columns and 'Dec' in columns:
