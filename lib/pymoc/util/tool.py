@@ -147,7 +147,13 @@ class MOCTool(object):
 
         ::
 
-            pymoctool --catalog coords.txt [order 12] [radius 3600]
+            pymoctool --catalog coords.txt
+                [order 12]
+                [radius 3600]
+                [unit (hour | deg | rad) (deg | rad)]
+
+        Units (if not specified) are assumed to be hours and degrees for ICRS
+        coordinates and degrees for galactic coordinates.
         """
 
         from astropy.coordinates import SkyCoord
@@ -158,6 +164,7 @@ class MOCTool(object):
         filename = self.params.pop()
         order = 12
         radius = 3600
+        unit = None
 
         while self.params:
             if self.params[-1] == 'order':
@@ -166,6 +173,11 @@ class MOCTool(object):
             elif self.params[-1] == 'radius':
                 self.params.pop()
                 radius = float(self.params.pop())
+            elif self.params[-1] == 'unit':
+                self.params.pop()
+                unit_x = self.params.pop()
+                unit_y = self.params.pop()
+                unit = (unit_x, unit_y)
             else:
                 break
 
@@ -173,15 +185,21 @@ class MOCTool(object):
         columns = catalog.columns
 
         if 'RA' in columns and 'Dec' in columns:
+            if unit is None:
+                unit = (hour, degree)
+
             coords = SkyCoord(catalog['RA'],
                               catalog['Dec'],
-                              unit=(hour, degree),
+                              unit=unit,
                               frame='icrs')
 
         elif 'Lat' in columns and 'Lon' in columns:
+            if unit is None:
+                unit = (degree, degree)
+
             coords = SkyCoord(catalog['Lon'],
                               catalog['Lat'],
-                              unit=(degree, degree),
+                              unit=unit,
                               frame='galactic')
 
         else:
