@@ -1,6 +1,13 @@
 Utilities
 =========
 
+pymoc.util.catalog
+------------------
+
+.. automodule:: pymoc.util.catalog
+    :members:
+    :member-order: bysource
+
 pymoc.util.plot
 ---------------
 

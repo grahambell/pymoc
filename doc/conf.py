@@ -29,7 +29,10 @@ try:
     from unittest.mock import Mock
 except ImportError:
     from mock import Mock
-for mod_name in ('astropy', 'astropy.io', 'healpy',
+for mod_name in (
+        'astropy', 'astropy.coordinates', 'astropy.io',
+        'astropy.units', 'astropy.units.quantity',
+        'healpy', 'healpy.pixelfunc',
         'matplotlib', 'matplotlib.colors', 'matplotlib.pyplot', 'numpy'):
     sys.modules[mod_name] = Mock()
 
