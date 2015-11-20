@@ -280,6 +280,19 @@ class MOCTool(object):
         filename = self.params.pop()
         self.moc = self.moc.intersection(MOC(filename=filename))
 
+    @command('--name')
+    def name(self):
+        """Set the name of the current MOC.
+
+        The new name should be given after this option.
+
+        ::
+
+            pymoctool ... --name 'New MOC name' --output new_moc.fits
+        """
+
+        self.moc.name = self.params.pop()
+
     @command('--normalize')
     def normalize(self):
         """Normalize the MOC to a given order.
