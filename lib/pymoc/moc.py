@@ -72,16 +72,27 @@ class MOC(object):
         self._orders = tuple(set() for i in range(0, MAX_ORDER + 1))
         self._normalized = True
 
+        # Initialize metadata properties but wait until after reading
+        # metadata from a file before overriding with specified values.
+        self.id = None
+        self.name = None
+        self.origin = None
+        self.type = None
+
         if filename is not None:
             # Read the file, including metadata if present.
             self.read(filename, filetype, include_meta=True)
 
         # Set any metadata explicity specified, overriding that
         # read from the file.
-        self.id = mocid
-        self.name = name
-        self.origin = origin
-        self.type = moctype
+        if mocid is not None:
+            self.id = mocid
+        if name is not None:
+            self.name = name
+        if origin is not None:
+            self.origin = origin
+        if moctype is not None:
+            self.type = moctype
 
         # Add any cells specified in the arguments.
         if order is not None and cells is not None:
