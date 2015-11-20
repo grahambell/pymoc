@@ -257,6 +257,19 @@ class MOCTool(object):
             print('Use "pymoctool --help COMMAND" for additional '
                   'information about a command.')
 
+    @command('--id')
+    def identifier(self):
+        """Set the identifier of the current MOC.
+
+        The new identifier should be given after this option.
+
+        ::
+
+            pymoctool ... --id 'New MOC identifier' --output new_moc.fits
+        """
+
+        self.moc.id = self.params.pop()
+
     @command('--info', '-i')
     def display_info(self):
         """Display basic information about the running MOC."""
