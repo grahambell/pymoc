@@ -17,6 +17,7 @@ from unittest import TestCase
 
 from pymoc import MOC
 
+
 class OperatorsTestCase(TestCase):
     def test_eq(self):
         self.assertEqual(

@@ -18,9 +18,10 @@ from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def plot_moc(moc, order=None, antialias=0, filename=None,
-        projection='cart', color='blue', title='', coord_sys='C',
-        graticule=True, **kwargs):
+             projection='cart', color='blue', title='', coord_sys='C',
+             graticule=True, **kwargs):
     """Plot a MOC using Healpy.
     """
 
@@ -41,16 +42,16 @@ def plot_moc(moc, order=None, antialias=0, filename=None,
 
     if color == 'blue':
         plotargs['cmap'] = LinearSegmentedColormap.from_list(
-                            'white-blue', ['#FFFFFF', '#0000AA'])
+            'white-blue', ['#FFFFFF', '#0000AA'])
     elif color == 'green':
         plotargs['cmap'] = LinearSegmentedColormap.from_list(
-                            'white-green', ['#FFFFFF', '#008800'])
+            'white-green', ['#FFFFFF', '#008800'])
     elif color == 'red':
         plotargs['cmap'] = LinearSegmentedColormap.from_list(
-                            'white-red', ['#FFFFFF', '#FF0000'])
+            'white-red', ['#FFFFFF', '#FF0000'])
     elif color == 'black':
         plotargs['cmap'] = LinearSegmentedColormap.from_list(
-                            'white-black', ['#FFFFFF', '#000000'])
+            'white-black', ['#FFFFFF', '#000000'])
     else:
         raise ValueError('Unknown color: {0}'.format(color))
 

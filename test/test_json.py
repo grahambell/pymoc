@@ -21,6 +21,7 @@ from unittest import TestCase
 from pymoc import MOC
 from pymoc.io.json import read_moc_json, write_moc_json
 
+
 class JSONTestCase(TestCase):
     def test_json(self):
         test_json = b'{"1":[1,2,4],"2":[12,13,14,21,23,25]}'

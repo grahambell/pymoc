@@ -21,6 +21,7 @@ from unittest import TestCase
 from pymoc import MOC
 from pymoc.io.ascii import read_moc_ascii, write_moc_ascii
 
+
 class ASCIITestCase(TestCase):
     def test_ascii(self):
         test_ascii = '1/1,3,4 2/4,25,12-14,21'

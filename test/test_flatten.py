@@ -17,6 +17,7 @@ from unittest import TestCase
 
 from pymoc import MOC
 
+
 class FlattenTestCase(TestCase):
     def test_flattened(self):
         p = MOC(4, (11, 12))
@@ -29,6 +30,11 @@ class FlattenTestCase(TestCase):
 
         q = p + MOC(5, (55,))
 
-        self.assertEqual(q.flattened(4), set((11, 12, 13)))
-        self.assertEqual(q.flattened(4, False), set((11, 12)))
-        self.assertEqual(q.flattened(5), set((44, 45, 46, 47, 48, 49, 50, 51, 55)))
+        self.assertEqual(q.flattened(4),
+                         set((11, 12, 13)))
+
+        self.assertEqual(q.flattened(4, False),
+                         set((11, 12)))
+
+        self.assertEqual(q.flattened(5),
+                         set((44, 45, 46, 47, 48, 49, 50, 51, 55)))

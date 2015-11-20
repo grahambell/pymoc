@@ -18,6 +18,7 @@ from unittest import TestCase
 
 from pymoc import MOC
 
+
 class AreaTestCase(TestCase):
     def test_orders(self):
         # Test the size of one cell of each order against the values

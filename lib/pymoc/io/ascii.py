@@ -15,6 +15,7 @@
 
 from __future__ import unicode_literals
 
+
 def write_moc_ascii(moc, filename=None, file=None):
     """Write a MOC to an ASCII file.
 
@@ -46,6 +47,7 @@ def write_moc_ascii(moc, filename=None, file=None):
         with open(filename, 'w') as f:
             _write_ascii(orders, f)
 
+
 def read_moc_ascii(moc, filename=None, file=None):
     """Read from an ASCII file into a MOC.
 
@@ -70,13 +72,16 @@ def read_moc_ascii(moc, filename=None, file=None):
 
         moc.add(order, cells)
 
+
 def _write_ascii(orders, f):
     f.write(' '.join(orders))
+
 
 def _read_ascii(f):
     text = f.read()
 
     return text.strip().split(' ')
+
 
 def _format_range(rmin, rmax):
     if rmin == rmax:

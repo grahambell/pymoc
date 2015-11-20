@@ -30,6 +30,7 @@ import numpy as np
 
 from ..version import version
 
+
 def write_moc_fits_hdu(moc):
     """Create a FITS table HDU representation of a MOC.
     """
@@ -88,13 +89,14 @@ def write_moc_fits_hdu(moc):
         tbhdu.header['ORIGIN'] = moc.origin
         tbhdu.header.comments['ORIGIN'] = 'MOC origin'
     tbhdu.header['DATE'] = datetime.utcnow().replace(
-            microsecond=0).isoformat()
+        microsecond=0).isoformat()
     tbhdu.header.comments['DATE'] = 'MOC creation date'
     if moc.name is not None:
         tbhdu.header['EXTNAME'] = moc.name
         tbhdu.header.comments['EXTNAME'] = 'MOC name'
 
     return tbhdu
+
 
 def write_moc_fits(moc, filename, **kwargs):
     """Write a MOC as a FITS file.
@@ -109,6 +111,7 @@ def write_moc_fits(moc, filename, **kwargs):
     hdulist = fits.HDUList([prihdu, tbhdu])
     hdulist.writeto(filename, **kwargs)
 
+
 def read_moc_fits(moc, filename, include_meta=False, **kwargs):
     """Read data from a FITS file into a MOC.
 
@@ -119,6 +122,7 @@ def read_moc_fits(moc, filename, include_meta=False, **kwargs):
     hl = fits.open(filename, mode='readonly', **kwargs)
 
     read_moc_fits_hdu(moc, hl[1], include_meta)
+
 
 def read_moc_fits_hdu(moc, hdu, include_meta=False):
     """Read data from a FITS table HDU into a MOC.

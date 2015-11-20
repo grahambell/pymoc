@@ -17,6 +17,7 @@ from unittest import TestCase
 
 from pymoc import MOC
 
+
 class PropertiesTestCase(TestCase):
     def test_properties(self):
         m = MOC(4, (11, 12))

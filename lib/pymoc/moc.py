@@ -22,6 +22,7 @@ MAX_ORDER = 29
 
 MOC_TYPES = ('IMAGE', 'CATALOG')
 
+
 class MOC(object):
     """Class representing Multi-Order Coverage maps.
 
@@ -34,8 +35,8 @@ class MOC(object):
     """
 
     def __init__(self, order=None, cells=None,
-            filename=None, filetype=None,
-            name=None, mocid=None, origin=None, moctype=None):
+                 filename=None, filetype=None,
+                 name=None, mocid=None, origin=None, moctype=None):
         """Construct new MOC object.
 
         By default the new MOC will be empty, but if an order and a
@@ -349,7 +350,7 @@ class MOC(object):
         58.63
         """
 
-        return self.area * ((180 / pi ) ** 2)
+        return self.area * ((180 / pi) ** 2)
 
     @property
     def cells(self):
@@ -437,7 +438,7 @@ class MOC(object):
         """
 
         copy = MOC(name=self.name, mocid=self.id,
-                origin=self.origin, moctype=self.type)
+                   origin=self.origin, moctype=self.type)
 
         copy += self
 
@@ -493,7 +494,8 @@ class MOC(object):
                     # cells.  Those which actually match the area we are
                     # trying to remove will be removed at the next stage.
                     self._orders[order_i].remove(cell_i)
-                    self.add(order_i + 1, range(cell_i << 2, (cell_i + 1) << 2))
+                    self.add(order_i + 1,
+                             range(cell_i << 2, (cell_i + 1) << 2))
                 elif operation == 'inter':
                     return (order, (cell,))
 
@@ -617,8 +619,8 @@ class MOC(object):
                 # so that we can avoid checking the adjacent pixels.
                 if (already_contained or (order > max_order) or
                         (((pixel ^ 1) in pixels) and
-                        ((pixel ^ 2) in pixels) and
-                        ((pixel ^ 3) in pixels))):
+                         ((pixel ^ 2) in pixels) and
+                         ((pixel ^ 3) in pixels))):
 
                     pixels.discard(pixel ^ 1)
                     pixels.discard(pixel ^ 2)
@@ -791,8 +793,8 @@ class MOC(object):
             raise TypeError('MOC order must be convertable to int')
 
         if not 0 <= order <= MAX_ORDER:
-            raise ValueError('MOC order must be in range 0-{0}'.format(
-                    MAX_ORDER))
+            raise ValueError(
+                'MOC order must be in range 0-{0}'.format(MAX_ORDER))
 
         return order
 
@@ -810,7 +812,8 @@ class MOC(object):
             raise TypeError('MOC cell must be convertable to int')
 
         if not 0 <= cell < max_cells:
-            raise ValueError('MOC cell order ' +
-                '{0} must be in range 0-{1}'.format(order, max_cells - 1))
+            raise ValueError(
+                'MOC cell order {0} must be in range 0-{1}'.format(
+                    order, max_cells - 1))
 
         return cell

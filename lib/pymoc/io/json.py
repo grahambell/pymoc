@@ -18,6 +18,7 @@ from __future__ import absolute_import, unicode_literals
 from codecs import utf_8_decode, utf_8_encode
 import json
 
+
 def write_moc_json(moc, filename=None, file=None):
     """Write a MOC in JSON encoding.
 
@@ -37,6 +38,7 @@ def write_moc_json(moc, filename=None, file=None):
         with open(filename, 'wb') as f:
             _write_json(obj, f)
 
+
 def read_moc_json(moc, filename=None, file=None):
     """Read JSON encoded data into a MOC.
 
@@ -52,9 +54,11 @@ def read_moc_json(moc, filename=None, file=None):
     for (order, cells) in obj.items():
         moc.add(order, cells)
 
+
 def _write_json(obj, f):
     f.write(utf_8_encode(
         json.dumps(obj, sort_keys=True, separators=(',', ':')))[0])
+
 
 def _read_json(f):
     return json.loads(utf_8_decode(f.read())[0])

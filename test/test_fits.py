@@ -18,6 +18,7 @@ from unittest import TestCase
 from pymoc import MOC
 from pymoc.io.fits import read_moc_fits_hdu, write_moc_fits_hdu
 
+
 class FITSTestCase(TestCase):
     def test_fits(self):
         orig = MOC()

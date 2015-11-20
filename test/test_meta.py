@@ -17,6 +17,7 @@ from unittest import TestCase
 
 from pymoc import MOC
 
+
 class MetadataTestCase(TestCase):
     def test_metadata(self):
         m = MOC(name='test-moc',
