@@ -718,7 +718,7 @@ class MOC(object):
             raise ValueError('Unknown MOC file type {0}'.format(filetype))
 
     def write(self, filename, filetype=None, **kwargs):
-        """Write the converage data in the MOC object to a file.
+        """Write the coverage data in the MOC object to a file.
 
         The filetype can be given or left to be inferred as for the
         read method.
