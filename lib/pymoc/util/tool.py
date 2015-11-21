@@ -133,7 +133,7 @@ class MOCTool(object):
             self.moc.read(filename)
 
     @command('--catalog')
-    def help(self):
+    def catalog(self):
         """Create MOC from catalog of coordinates.
 
         This command requires that the Healpy and Astropy libraries
