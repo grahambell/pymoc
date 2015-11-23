@@ -30,7 +30,7 @@ setup(
     description='Multi-Order Coverage map module for Python',
     long_description=long_description,
     author='Graham Bell',
-    author_email='g.bell@jach.hawaii.edu',
+    author_email='g.bell@eaobservatory.org',
     url='http://github.com/grahambell/pymoc',
     package_dir={'': 'lib'},
     packages=['pymoc', 'pymoc.io', 'pymoc.util'],
