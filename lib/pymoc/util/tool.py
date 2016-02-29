@@ -166,10 +166,7 @@ class MOCTool(object):
             22:30:00 +45:00:00
         """
 
-        from astropy.coordinates import SkyCoord
-        from astropy.io import ascii
-        from astropy.units import hour, degree
-        from .catalog import catalog_to_moc
+        from .catalog import catalog_to_moc, read_ascii_catalog
 
         filename = self.params.pop()
         order = 12
@@ -195,30 +192,7 @@ class MOCTool(object):
             else:
                 break
 
-        catalog = ascii.read(filename, format=format_)
-        columns = catalog.columns
-
-        if 'RA' in columns and 'Dec' in columns:
-            if unit is None:
-                unit = (hour, degree)
-
-            coords = SkyCoord(catalog['RA'],
-                              catalog['Dec'],
-                              unit=unit,
-                              frame='icrs')
-
-        elif 'Lat' in columns and 'Lon' in columns:
-            if unit is None:
-                unit = (degree, degree)
-
-            coords = SkyCoord(catalog['Lon'],
-                              catalog['Lat'],
-                              unit=unit,
-                              frame='galactic')
-
-        else:
-            raise CommandError('columns RA,Dec or Lon,Lat not found')
-
+        coords = read_ascii_catalog(filename, format_=format_, unit=unit)
         catalog_moc = catalog_to_moc(coords, radius, order)
 
         if self.moc is None:
