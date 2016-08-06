@@ -384,7 +384,7 @@ class MOC(object):
 
         return n
 
-    def add(self, order, cells):
+    def add(self, order, cells, no_validation=False):
         """Add cells at a given order to the MOC.
 
         The cells are inserted into the MOC at the specified order.  This
@@ -400,19 +400,28 @@ class MOC(object):
         >>> m.add(5, (88, 89))
         >>> m.cells
         4
+
+        The `no_validation` option can be given to skip validation of the
+        cell numbers.  They must already be integers in the correct range.
         """
 
         self._normalized = False
 
         order = self._validate_order(order)
 
-        cell_set = set()
+        if no_validation:
+            # Simply add the given cells to the set with no validation.
+            self._orders[order].update(cells)
 
-        for cell in cells:
-            cell = self._validate_cell(order, cell)
-            cell_set.add(cell)
+        else:
+            # Collect validated cell numbers in a set for addition.
+            cell_set = set()
 
-        self._orders[order].update(cell_set)
+            for cell in cells:
+                cell = self._validate_cell(order, cell)
+                cell_set.add(cell)
+
+            self._orders[order].update(cell_set)
 
     def remove(self, order, cells):
         """Remove cells at a given order from the MOC.
