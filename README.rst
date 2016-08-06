@@ -36,6 +36,12 @@ or::
 
     PYTHONPATH=lib python2 -m unittest discover
 
+The `test-extra` directory contains additional tests which may take
+longer to perform.  You can exclude these by specifying just the
+plain `test` directory, for example with::
+
+    PYTHONPATH=lib python -m unittest discover -s test
+
 The routines included in the doctests should also be covered by
 the unit tests.  However to ensure the documentation is correct,
 they can be checked with::
