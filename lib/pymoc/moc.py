@@ -260,6 +260,18 @@ class MOC(object):
 
         return self
 
+    def __repr__(self):
+        """Generate printable representation.
+
+        Since the constructor only accepts cells at one order and we may be
+        generating a representation for a MOC with cells at multiple orders
+        we can't try to give an expression which would construct the object.
+        Instead show a description in angle brackets.
+        """
+
+        return '<MOC: {0!r}>'.format(
+            [(o, sorted(cs)) for (o, cs) in enumerate(self._orders) if cs])
+
     @property
     def order(self):
         """The highest order at which the MOC has cells.
