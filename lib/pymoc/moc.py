@@ -510,7 +510,7 @@ class MOC(object):
                     self.add(order_i + 1,
                              range(cell_i << 2, (cell_i + 1) << 2))
                 elif operation == 'inter':
-                    return (order, (cell,))
+                    return [(order, (cell,))]
 
         # Check for the specific cell itself, but only after looking at larger
         # cells because for the "remove" operation we may have broken up
@@ -521,7 +521,9 @@ class MOC(object):
             elif operation == 'remove':
                 self._orders[order].remove(cell)
             elif operation == 'inter':
-                return (order, (cell,))
+                return [(order, (cell,))]
+
+        result = []
 
         if include_smaller:
             # Check for a smaller cell (higher order) which is part
@@ -542,12 +544,13 @@ class MOC(object):
                     for cell_i in cells:
                         self._orders[order_i].remove(cell_i)
                 elif operation == 'inter':
-                    return (order_i, cells)
+                    if cells:
+                        result.append((order_i, cells))
 
         if operation == 'check':
             return False
-        else:
-            return None
+        elif operation == 'inter':
+            return result
 
     def intersection(self, other):
         """Returns a MOC representing the intersection with another MOC.
@@ -563,8 +566,7 @@ class MOC(object):
 
         for (order, cells) in other:
             for cell in cells:
-                i = self._compare_operation(order, cell, True, 'inter')
-                if i is not None:
+                for i in self._compare_operation(order, cell, True, 'inter'):
                     inter.add(*i)
 
         return inter

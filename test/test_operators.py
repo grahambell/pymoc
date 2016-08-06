@@ -170,3 +170,36 @@ class OperatorsTestCase(TestCase):
 
         self.assertFalse(i.normalized)
         self.assertEqual(i, MOC(0, (2,)) + MOC(2, (19,)))
+
+        # Test of intersection with 2 levels difference.
+        # (This test is based on GitHub issue #2.)
+        p = MOC(4, (1024,))
+        q = MOC(6, (16385,))
+
+        i = p.intersection(q)
+        self.assertFalse(i.normalized)
+        self.assertEqual(i, MOC(6, (16385,)))
+
+        i = q.intersection(p)
+        self.assertFalse(i.normalized)
+        self.assertEqual(i, MOC(6, (16385,)))
+
+        # Test of intersection with values at multiple levels.
+        p = MOC(1, (1,))
+        q = MOC()
+        q.add(2, (4, 8))
+        q.add(3, (20, 192))
+        q.add(4, (96, 256))
+
+        expect = MOC()
+        expect.add(2, (4,))
+        expect.add(3, (20,))
+        expect.add(4, (96,))
+
+        i = q.intersection(p)
+        self.assertFalse(i.normalized)
+        self.assertEqual(i, expect)
+
+        i = q.intersection(p)
+        self.assertFalse(i.normalized)
+        self.assertEqual(i, expect)
