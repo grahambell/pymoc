@@ -194,8 +194,8 @@ class MOC(object):
 
         >>> p = MOC(4, (5, 6))
         >>> p += MOC(4, (7, 8))
-        >>> sorted(p[4])
-        [5, 6, 7, 8]
+        >>> repr(p)
+        '<MOC: [(4, [5, 6, 7, 8])]>'
         """
 
         if not isinstance(other, MOC):
@@ -211,9 +211,8 @@ class MOC(object):
 
         Returns a MOC which is the union of two MOCs.
 
-        >>> s = MOC(4, (5, 6)) + MOC(4, (7, 8))
-        >>> sorted(s[4])
-        [5, 6, 7, 8]
+        >>> MOC(4, (5, 6)) + MOC(4, (7, 8))
+        <MOC: [(4, [5, 6, 7, 8])]>
         """
 
         if not isinstance(other, MOC):
@@ -231,11 +230,8 @@ class MOC(object):
         Returns a MOC which is the copy of the first MOC with the
         intersection with the second MOC removed.
 
-        >>> d = MOC(0, (0,)) - MOC(2, (15,))
-        >>> sorted(d[1])
-        [0, 1, 2]
-        >>> sorted(d[2])
-        [12, 13, 14]
+        >>> MOC(0, (0,)) - MOC(2, (15,))
+        <MOC: [(1, [0, 1, 2]), (2, [12, 13, 14])]>
         """
 
         if not isinstance(other, MOC):
@@ -455,8 +451,8 @@ class MOC(object):
 
         >>> p = MOC(4, (5, 6))
         >>> q = p.copy()
-        >>> sorted(q[4])
-        [5, 6]
+        >>> repr(q)
+        '<MOC: [(4, [5, 6])]>'
         """
 
         copy = MOC(name=self.name, mocid=self.id,
@@ -566,9 +562,8 @@ class MOC(object):
 
         >>> p = MOC(2, (3, 4, 5))
         >>> q = MOC(2, (4, 5, 6))
-        >>> i = p.intersection(q)
-        >>> sorted(i[2])
-        [4, 5]
+        >>> p.intersection(q)
+        <MOC: [(2, [4, 5])]>
         """
 
         inter = MOC()
