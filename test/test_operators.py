@@ -196,7 +196,7 @@ class OperatorsTestCase(TestCase):
         expect.add(3, (20,))
         expect.add(4, (96,))
 
-        i = q.intersection(p)
+        i = p.intersection(q)
         self.assertFalse(i.normalized)
         self.assertEqual(i, expect)
 
