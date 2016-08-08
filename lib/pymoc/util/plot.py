@@ -23,6 +23,46 @@ def plot_moc(moc, order=None, antialias=0, filename=None,
              projection='cart', color='blue', title='', coord_sys='C',
              graticule=True, **kwargs):
     """Plot a MOC using Healpy.
+
+    This generates a plot of the MOC at the specified order, or the MOC's
+    current order if this is not specified.  The MOC is flattened at an order
+    of `order + antialias` to generate intermediate color levels.
+
+    :param order: HEALPix order at which to generate the plot.
+
+    :param antialias: number of additional HEALPix orders to use for
+        intermediate color levels.  (There can be `4 ** antialias` levels.)
+
+    :param filename: file in which to save plot.  If not specified then
+        the plot is shown with `plt.show()`.
+
+    :param projection: map projection to be used --- can be shortened to
+        4 characters.  One of:
+
+            * `'cart[esian]'` (uses `healpy.visufunc.cartview`)
+            * `'moll[weide]'` (uses `healpy.visufunc.mollview`)
+            * `'gnom[onic]'` (uses `healpy.visufunc.gnomview`)
+
+    :param color: color scheme.
+        One of:
+
+            * `'blue'`
+            * `'green'`
+            * `'red'`
+            * `'black'`
+
+    :param title: title of the plot.
+
+    :param coord_sys: Healpy coordinate system code for the desired plot
+        coordinates.  One of:
+
+            * `'C'` --- Celestial (equatorial)
+            * `'G'` --- Galactic
+            * `'E'` --- Ecliptic
+
+    :param graticule: whether or not to draw a graticule.
+
+    :param \*\*kwargs: passed to the selected Healpy plotting function.
     """
 
     # Process arguments.
