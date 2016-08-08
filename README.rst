@@ -54,6 +54,9 @@ Requirements
 For reading and writing data in FITS format, the ``astropy``
 library is required.
 
+``Healpy`` is needed for some of the utility functions such as
+``plot_moc`` and ``catalog_to_moc``.
+
 .. endpymocinstall
 
 License
