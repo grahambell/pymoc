@@ -144,7 +144,7 @@ def read_moc_fits_hdu(moc, hdu, include_meta=False):
     current_cells = []
 
     nuniqs = hdu.data.field(0)
-    orders = (np.log2(nuniqs / 4) / 2).astype(int)
+    orders = (np.log2(nuniqs / 4) / 2).astype(np.int64)
     cells = nuniqs - 4 * (4 ** orders)
 
     for (order, cell) in izip(orders, cells):
