@@ -1,3 +1,8 @@
+0.4.2 2017-04-19
+
+    - Corrected bug reading MOCs in FITS format on 32-bit systems with
+      64-bit NUNIQ columns.
+
 0.4.1 2016-08-08
 
     - Corrected bug in intersection routine.
