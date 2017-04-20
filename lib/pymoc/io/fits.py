@@ -1,4 +1,5 @@
 # Copyright (C) 2013-2014 Science and Technology Facilities Council.
+# Copyright (C) 2017 East Asian Observatory.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -143,8 +144,12 @@ def read_moc_fits_hdu(moc, hdu, include_meta=False):
     current_order = None
     current_cells = []
 
+    # Determine type to use for orders: 32 bit if column type is J,
+    # otherwise assume we need 64 bit.
+    moc_type = np.int32 if (hdu.data.formats[0] == 'J') else np.int64
+
     nuniqs = hdu.data.field(0)
-    orders = (np.log2(nuniqs / 4) / 2).astype(np.int64)
+    orders = (np.log2(nuniqs / 4) / 2).astype(moc_type)
     cells = nuniqs - 4 * (4 ** orders)
 
     for (order, cell) in izip(orders, cells):
