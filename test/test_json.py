@@ -39,3 +39,28 @@ class JSONTestCase(TestCase):
         write_moc_json(moc, file=out)
 
         self.assertEqual(out.getvalue(), test_json)
+
+    def test_json_large(self):
+        orig = MOC()
+        orig.add(29, [
+            3458700000000000000, 3458700000000000007,
+            3458700000000000008, 3458700000000000009,
+        ])
+
+        out = BytesIO()
+        write_moc_json(orig, file=out)
+        json = out.getvalue()
+
+        self.assertEqual(
+            json, b'{"29":[3458700000000000000,3458700000000000007,'
+            b'3458700000000000008,3458700000000000009]}')
+
+        copy = MOC()
+        in_ = BytesIO(json)
+        read_moc_json(copy, file=in_)
+
+        self.assertEqual(copy.order, 29)
+        self.assertEqual(copy.cells, 4)
+        self.assertEqual(copy[29], frozenset([
+            3458700000000000000, 3458700000000000007,
+            3458700000000000008, 3458700000000000009]))

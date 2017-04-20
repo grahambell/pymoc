@@ -40,3 +40,28 @@ class ASCIITestCase(TestCase):
         write_moc_ascii(moc, file=out)
 
         self.assertEqual(out.getvalue(), test_ascii_sorted)
+
+    def test_ascii_large(self):
+        orig = MOC()
+        orig.add(29, [
+            3458700000000000000, 3458700000000000007,
+            3458700000000000008, 3458700000000000009,
+        ])
+
+        out = StringIO()
+        write_moc_ascii(orig, file=out)
+        text = out.getvalue()
+
+        self.assertEqual(
+            text, '29/3458700000000000000,'
+            '3458700000000000007-3458700000000000009')
+
+        copy = MOC()
+        in_ = StringIO(text)
+        read_moc_ascii(copy, file=in_)
+
+        self.assertEqual(copy.order, 29)
+        self.assertEqual(copy.cells, 4)
+        self.assertEqual(copy[29], frozenset([
+            3458700000000000000, 3458700000000000007,
+            3458700000000000008, 3458700000000000009]))
