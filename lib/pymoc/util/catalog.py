@@ -151,6 +151,10 @@ def catalog_to_cells(catalog, radius, order, include_fallback=True, **kwargs):
 
     vectors = ang2vec(theta, phi)
 
+    # Ensure we can iterate over vectors (it might be a single position).
+    if catalog.isscalar:
+        vectors = [vectors]
+
     # Query for a list of cells for each catalog position.
     cells = set()
     for vector in vectors:
