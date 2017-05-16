@@ -604,8 +604,6 @@ class MOC(object):
         if self.normalized and max_order >= self.order:
             return
 
-        moc_order = 0
-
         # Group the pixels by iterating down from the order.  At each
         # order, where all 4 adjacent pixels are present (or we are above
         # the maximum order) they are replaced with a single pixel in the
@@ -652,11 +650,6 @@ class MOC(object):
 
                 else:
                     new_pixels.add(pixel)
-
-                    # Keep a record of the highest level at which pixels
-                    # have been stored.
-                    if moc_order == 0:
-                        moc_order = order
 
             if new_pixels:
                 self._orders[order].update(new_pixels)
