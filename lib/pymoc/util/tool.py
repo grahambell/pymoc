@@ -1,5 +1,5 @@
 # Copyright (C) 2014 Science and Technology Facilities Council.
-# Copyright (C) 2015 East Asian Observatory.
+# Copyright (C) 2015-2017 East Asian Observatory.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -153,6 +153,7 @@ class MOCTool(object):
                 [radius 3600]
                 [unit (hour | deg | rad) (deg | rad)]
                 [format commented_header]
+                [inclusive]
 
         Units (if not specified) are assumed to be hours and degrees for ICRS
         coordinates and degrees for galactic coordinates.  The format, if not
@@ -173,6 +174,7 @@ class MOCTool(object):
         radius = 3600
         unit = None
         format_ = 'commented_header'
+        kwargs = {}
 
         while self.params:
             if self.params[-1] == 'order':
@@ -189,11 +191,14 @@ class MOCTool(object):
             elif self.params[-1] == 'format':
                 self.params.pop()
                 format_ = self.params.pop()
+            elif self.params[-1] == 'inclusive':
+                self.params.pop()
+                kwargs['inclusive'] = True
             else:
                 break
 
         coords = read_ascii_catalog(filename, format_=format_, unit=unit)
-        catalog_moc = catalog_to_moc(coords, radius, order)
+        catalog_moc = catalog_to_moc(coords, radius, order, **kwargs)
 
         if self.moc is None:
             self.moc = catalog_moc
