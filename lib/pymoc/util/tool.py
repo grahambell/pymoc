@@ -248,11 +248,18 @@ class MOCTool(object):
             pymoctool ... --id 'New MOC identifier' --output new_moc.fits
         """
 
+        if self.moc is None:
+            self.moc = MOC()
+
         self.moc.id = self.params.pop()
 
     @command('--info', '-i')
     def display_info(self):
         """Display basic information about the running MOC."""
+
+        if self.moc is None:
+            print('No MOC information present')
+            return
 
         if self.moc.name is not None:
             print('Name:', self.moc.name)
@@ -274,6 +281,9 @@ class MOCTool(object):
             pymoctool a.fits --intersection b.fits --output intersection.fits
         """
 
+        if self.moc is None:
+            raise CommandError('No MOC information present for intersection')
+
         filename = self.params.pop()
         self.moc = self.moc.intersection(MOC(filename=filename))
 
@@ -287,6 +297,9 @@ class MOCTool(object):
 
             pymoctool ... --name 'New MOC name' --output new_moc.fits
         """
+
+        if self.moc is None:
+            self.moc = MOC()
 
         self.moc.name = self.params.pop()
 
@@ -302,12 +315,18 @@ class MOCTool(object):
             pymoctool a.fits --normalize 10 --output a_10.fits
         """
 
+        if self.moc is None:
+            raise CommandError('No MOC information present for normalization')
+
         order = int(self.params.pop())
         self.moc.normalize(order)
 
     @command('--output', '-o')
     def write_moc(self):
         """Write the MOC to a given file."""
+
+        if self.moc is None:
+            raise CommandError('No MOC information present for output')
 
         filename = self.params.pop()
         self.moc.write(filename)
@@ -323,6 +342,9 @@ class MOCTool(object):
 
             pymoctool a.fits --subtract b.fits --output difference.fits
         """
+
+        if self.moc is None:
+            raise CommandError('No MOC information present for subtraction')
 
         filename = self.params.pop()
         self.moc -= MOC(filename=filename)
@@ -351,6 +373,9 @@ class MOCTool(object):
 
             pymoctool ... --plot [order <order>] [antialias <level>] [file <filename>] ...
         """
+
+        if self.moc is None:
+            raise CommandError('No MOC information present for plotting')
 
         from .plot import plot_moc
 
