@@ -1,3 +1,11 @@
+0.5.0 2017-05-30
+
+    - Improved speed of MOC generation from catalogs by making use of the
+      Healpy "query_disc" function.  Additional optional arguments can be
+      given to the "catalog_to_moc" function to control this process.
+
+    - "pymoctool" now checks that a running MOC is present for some commands.
+
 0.4.2 2017-04-19
 
     - Corrected bug reading MOCs in FITS format on 32-bit systems with
