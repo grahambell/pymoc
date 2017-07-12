@@ -1,4 +1,5 @@
 # Copyright (C) 2014 Science and Technology Facilities Council.
+# Copyright (C) 2017 East Asian Observatory.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,6 +62,9 @@ def read_moc_ascii(moc, filename=None, file=None):
             orders = _read_ascii(f)
 
     for text in orders:
+        if not text:
+            continue
+
         cells = []
         (order, ranges) = text.split('/')
         for r in ranges.split(','):

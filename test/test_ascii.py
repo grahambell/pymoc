@@ -1,4 +1,5 @@
 # Copyright (C) 2014 Science and Technology Facilities Council.
+# Copyright (C) 2017 East Asian Observatory.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,6 +41,15 @@ class ASCIITestCase(TestCase):
         write_moc_ascii(moc, file=out)
 
         self.assertEqual(out.getvalue(), test_ascii_sorted)
+
+    def test_ascii_empty(self):
+        in_ = StringIO('')
+
+        moc = MOC()
+        read_moc_ascii(moc, file=in_)
+
+        self.assertEqual(moc.order, 0)
+        self.assertEqual(moc[0], frozenset())
 
     def test_ascii_large(self):
         orig = MOC()
