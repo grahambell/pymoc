@@ -55,6 +55,14 @@ class CatalogTestCase(TestCase):
         self.assertGreater(len(inclusive), len(cells))
         self.assertTrue(inclusive.issuperset(cells))
 
+        # Test a cell close to a boundary.
+        catalog = SkyCoord(44.978, 1.304, frame='icrs', unit='deg')
+        cells = catalog_to_cells(catalog, 10, 12, inclusive=True)
+        self.assertEqual(cells, set((12344, 12345, 12346, 12347,)))
+
+        cells = catalog_to_cells(catalog, 0, 12, inclusive=True)
+        self.assertEqual(cells, set((12344,)))
+
     def test_catalog(self):
         catalog = SkyCoord([150.0, 300.0], [-45.0, 45.0],
                            frame='icrs', unit='deg')

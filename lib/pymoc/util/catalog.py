@@ -132,6 +132,9 @@ def catalog_to_cells(catalog, radius, order, include_fallback=True, **kwargs):
     `query_disc` may find none inside the radius.  In this case,
     if `include_fallback` is `True` (the default), the cell at each
     position is included.
+
+    If the given radius is zero (or smaller) then Healpy `query_disc`
+    is not used -- instead the fallback position is used automatically.
     """
 
     nside = 2 ** order
@@ -158,17 +161,21 @@ def catalog_to_cells(catalog, radius, order, include_fallback=True, **kwargs):
     # Query for a list of cells for each catalog position.
     cells = set()
     for vector in vectors:
-        # Try "disc" query.
-        vector_cells = query_disc(nside, vector, radius, nest=True, **kwargs)
+        if radius > 0.0:
+            # Try "disc" query.
+            vector_cells = query_disc(nside, vector, radius, nest=True, **kwargs)
 
-        if vector_cells.size > 0:
-            cells.update(vector_cells.tolist())
+            if vector_cells.size > 0:
+                cells.update(vector_cells.tolist())
+                continue
 
-        elif include_fallback:
-            # The query didn't find anything -- include the cell at the
-            # given position at least.
-            cell = vec2pix(nside, vector[0], vector[1], vector[2], nest=True)
-            cells.add(cell.item())
+            elif not include_fallback:
+                continue
+
+        # The query didn't find anything -- include the cell at the
+        # given position at least.
+        cell = vec2pix(nside, vector[0], vector[1], vector[2], nest=True)
+        cells.add(cell.item())
 
     return cells
 
