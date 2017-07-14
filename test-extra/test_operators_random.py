@@ -34,11 +34,11 @@ class OperatorsRandomizedTestCase(TestCase):
             i_pq = p.intersection(q)
             i_qp = q.intersection(p)
 
-            # p.write('test_moc_p_{}.fits'.format(i + 1), clobber=True)
-            # q.write('test_moc_q_{}.fits'.format(i + 1), clobber=True)
-            # s_pq.write('test_moc_pq_{}.fits'.format(i + 1), clobber=True)
-            # s_qp.write('test_moc_qp_{}.fits'.format(i + 1), clobber=True)
-            # i_pq.write('test_moc_i_{}.fits'.format(i + 1), clobber=True)
+            # p.write('test_moc_p_{}.fits'.format(i + 1), overwrite=True)
+            # q.write('test_moc_q_{}.fits'.format(i + 1), overwrite=True)
+            # s_pq.write('test_moc_pq_{}.fits'.format(i + 1), overwrite=True)
+            # s_qp.write('test_moc_qp_{}.fits'.format(i + 1), overwrite=True)
+            # i_pq.write('test_moc_i_{}.fits'.format(i + 1), overwrite=True)
 
             # Intersection should be the same both ways round.
             self.assertEqual(i_pq, i_qp)

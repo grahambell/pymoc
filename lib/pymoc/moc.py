@@ -737,7 +737,8 @@ class MOC(object):
         Any additional keyword arguments (kwargs) are passed on to
         the corresponding pymoc.io write functions (write_moc_fits,
         write_moc_json or write_moc_ascii).  This can be used, for
-        example, to set clobber=True when writing FITS files.
+        example, to set overwrite=True (or clobber=True prior to
+        Astropy version 2.0) when writing FITS files.
         """
 
         if filetype is not None:
