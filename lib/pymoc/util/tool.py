@@ -38,9 +38,11 @@ with) "b.fits" and write the combined MOC to "merged.txt".
 from __future__ import absolute_import, print_function
 
 import os.path
+import sys
 import textwrap
 
 from .. import MOC
+from ..io.ascii import read_moc_ascii, write_moc_ascii
 from ..version import version
 
 
@@ -110,6 +112,9 @@ class MOCTool(object):
                 # If we got a known command, execute it.
                 self.command[p](self)
 
+            elif p == '-':
+                self.read_moc_stdin()
+
             elif os.path.exists(p):
                 # If we were given the name of an existing file, read it.
                 self.read_moc(p)
@@ -131,6 +136,19 @@ class MOCTool(object):
 
         else:
             self.moc.read(filename)
+
+    def read_moc_stdin(self):
+        """Read from stdin into the current running MOC object.
+
+        Create the running MOC object if it does not already
+        exist, then attempt to read ASCII format data
+        from standard input.
+        """
+
+        if self.moc is None:
+            self.moc = MOC()
+
+        read_moc_ascii(self.moc, file=sys.stdin)
 
     @command('--catalog')
     def catalog(self):
@@ -329,7 +347,12 @@ class MOCTool(object):
             raise CommandError('No MOC information present for output')
 
         filename = self.params.pop()
-        self.moc.write(filename)
+
+        if filename == '-':
+            write_moc_ascii(self.moc, file=sys.stdout)
+            print()
+        else:
+            self.moc.write(filename)
 
     @command('--subtract')
     def subtract(self):
