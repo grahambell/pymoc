@@ -1,3 +1,16 @@
+0.5.1 2024-07-09
+
+    - Prevented an error when reading an empty ASCII MOC file.
+
+    - Updated a docstring which refered to the now deprecated Astropy
+      FITS HDUList.writeto method clobber argument.
+
+    - Skipped calling the Healpy "query_disc" function for catalogs
+      if the given radius is zero (or less).
+
+    - "pymoctool" now accepts "-" in place of a filename to read from
+      stdin or write to stdout in ASCII format.
+
 0.5.0 2017-05-30
 
     - Improved speed of MOC generation from catalogs by making use of the
