@@ -1,5 +1,5 @@
 # Copyright (C) 2014 Science and Technology Facilities Council.
-# Copyright (C) 2017 East Asian Observatory.
+# Copyright (C) 2017-2024 East Asian Observatory.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,6 +50,17 @@ class ASCIITestCase(TestCase):
 
         self.assertEqual(moc.order, 0)
         self.assertEqual(moc[0], frozenset())
+
+    def test_ascii_trailing(self):
+        # Check MOC 1.1 addition of trailing section to
+        # signify the MOCORDER.
+        in_ = StringIO('13/5,6,7 14/')
+
+        moc = MOC()
+        read_moc_ascii(moc, file=in_)
+
+        self.assertEqual(moc[13], frozenset([5, 6, 7]))
+        self.assertEqual(moc[14], frozenset())
 
     def test_ascii_large(self):
         orig = MOC()

@@ -1,4 +1,5 @@
 # Copyright (C) 2014 Science and Technology Facilities Council.
+# Copyright (C) 2017-2024 East Asian Observatory.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +40,17 @@ class JSONTestCase(TestCase):
         write_moc_json(moc, file=out)
 
         self.assertEqual(out.getvalue(), test_json)
+
+    def test_json_trailing(self):
+        # Check MOC 1.1 addition of trailing section to
+        # signify the MOCORDER.
+        in_ = BytesIO(b'{"13":[5,6,7],"14":[]}')
+
+        moc = MOC()
+        read_moc_json(moc, file=in_)
+
+        self.assertEqual(moc[13], frozenset([5, 6, 7]))
+        self.assertEqual(moc[14], frozenset())
 
     def test_json_large(self):
         orig = MOC()

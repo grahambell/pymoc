@@ -67,6 +67,10 @@ def read_moc_ascii(moc, filename=None, file=None):
 
         cells = []
         (order, ranges) = text.split('/')
+
+        if not ranges:
+            continue
+
         for r in ranges.split(','):
             try:
                 cells.append(int(r))
