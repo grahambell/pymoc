@@ -1,3 +1,11 @@
+0.5.2 2024-08-02
+
+    - Prevented an error reading an ASCII MOC file with an order with
+      an empty cell list.  As of MOC 1.1 this should encode the MOCORDER
+      if higher than the greatest stored order.  This module does not (yet)
+      process this information but it should now be able to read such
+      files without error.
+
 0.5.1 2024-07-09
 
     - Prevented an error when reading an empty ASCII MOC file.
